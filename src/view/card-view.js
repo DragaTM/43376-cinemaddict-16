@@ -1,5 +1,5 @@
 export const createCardTemplate = () => (
-	`<article class="film-card">
+  `<article class="film-card">
 		<a class="film-card__link">
 			<h3 class="film-card__title">The Dance of Life</h3>
 			<p class="film-card__rating">8.3</p>
@@ -18,4 +18,4 @@ export const createCardTemplate = () => (
 			<button class="film-card__controls-item film-card__controls-item--favorite" type="button">Mark as favorite</button>
 		</div>
 	</article>`
-	)
+);

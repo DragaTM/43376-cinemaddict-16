@@ -112,4 +112,4 @@ export const createDetailsTemplate = () => (
       </div>
     </form>
   </section>`
-  )
+);
