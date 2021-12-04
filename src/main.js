@@ -7,23 +7,23 @@ import {createShowMoreBtnTemplate} from './view/show-more-btn-view.js';
 import {createRatedTemplate} from './view/rated-view.js';
 import {createCommentedTemplate} from './view/commented-view.js';
 import {createStatTemplate} from './view/stat-view.js';
-//import {createDetailsTemplate} from './view/details-view.js';
 import {renderTemplate, renderPosition} from './render.js';
 import {generateFilm} from './mock/film.js';
-import {generateFilter} from './mock/filter.js';
+import {FILM_COUNT, FILM_COUNT_PER_STEP} from './const.js';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
-
-renderTemplate(siteHeaderElement, createProfileTemplate(), renderPosition.BEFOREEND);
-
-const FILM_COUNT = 18;
-const FILM_COUNT_PER_STEP = 5;
 const films = Array.from({length: FILM_COUNT}, generateFilm);
-const filters = generateFilter(films);
+const counts = {
+  all: films.length,
+  watchlist: films.filter((film) => film.inWatchlist).length,
+  history: films.filter((film) => film.isWatched).length,
+  favorite: films.filter((film) => film.isFavorite).length,
+};
 
+renderTemplate(siteHeaderElement, createProfileTemplate(counts.history), renderPosition.BEFOREEND);
 renderTemplate(siteMainElement, createSortTemplate(), renderPosition.BEFOREEND);
-renderTemplate(siteMainElement, createMenuTemplate(filters), renderPosition.BEFOREEND);
+renderTemplate(siteMainElement, createMenuTemplate(counts), renderPosition.BEFOREEND);
 renderTemplate(siteMainElement, createContentTemplate(), renderPosition.BEFOREEND);
 
 const siteFilmsElement = document.querySelector('.films');
@@ -74,6 +74,6 @@ for (let i = 0; i < COMMENTED_COUNT; i++) {
 }
 
 const siteFooterStatElement = document.querySelector('.footer__statistics');
-renderTemplate(siteFooterStatElement, createStatTemplate(filters), renderPosition.BEFOREEND);
+renderTemplate(siteFooterStatElement, createStatTemplate(counts.all), renderPosition.BEFOREEND);
 
 

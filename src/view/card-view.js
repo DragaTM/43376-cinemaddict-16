@@ -1,16 +1,8 @@
 export const createCardTemplate = (film) => {
   const {name, inWatchlist, isWatched, isFavorite, genre, description, commentsCount, poster, rating, time, year} = film;
-  const watchlistActive = inWatchlist !== false
-    ? ' film-card__controls-item--active'
-    : '';
-
-  const watchedActive = isWatched !== false
-    ? ' film-card__controls-item--active'
-    : '';
-
-  const favoriteActive = isFavorite !== false
-    ? ' film-card__controls-item--active'
-    : '';
+  const watchlistActive = inWatchlist ? ' film-card__controls-item--active' : '';
+  const watchedActive = isWatched ? ' film-card__controls-item--active' : '';
+  const favoriteActive = isFavorite ? ' film-card__controls-item--active' : '';
 
   return `<article class="film-card">
 		<a class="film-card__link">
