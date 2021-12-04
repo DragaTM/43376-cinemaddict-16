@@ -1,11 +1,4 @@
-//Функция из интернета
-
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
+import {getRandomInteger} from '../utils.js';
 
 const generateDescription = () => {
   const descriptions = [
@@ -40,13 +33,27 @@ const generateGenre = () => {
     'Musical',
     'Drama',
     'Thriller',
-    'Santa Claus Conquers the Martians',
-    'Popeye the Sailor Meets Sindbad the Sailor',
+    'Action',
+    'Horror',
   ];
 
   const randomIndex = getRandomInteger(0, genres.length - 1);
 
   return genres[randomIndex];
+};
+
+const generateTime = () => {
+  const times = [
+    '1h 35m',
+    '1h 44m',
+    '1h 57m',
+    '2h 03m',
+    '2h 21m',
+  ];
+
+  const randomIndex = getRandomInteger(0, times.length - 1);
+
+  return times[randomIndex];
 };
 
 const generateYear = () => {
@@ -67,6 +74,22 @@ const generateRating = () => {
   return randomRating;
 };
 
+const generatePoster = () => {
+  const posters = [
+    './images/posters/made-for-each-other.png',
+    './images/posters/popeye-meets-sinbad.png',
+    './images/posters/sagebrush-trail.jpg',
+    './images/posters/santa-claus-conquers-the-martians.jpg',
+    './images/posters/the-dance-of-life.jpg',
+    './images/posters/the-great-flamarion.jpg',
+    './images/posters/the-man-with-the-golden-arm.jpg',
+  ];
+
+  const randomIndex = getRandomInteger(0, posters.length - 1);
+
+  return posters[randomIndex];
+};
+
 export const generateFilm = () => ({
   name: generateName(),
   inWatchlist: Boolean(getRandomInteger(0, 1)),
@@ -74,9 +97,11 @@ export const generateFilm = () => ({
   isFavorite: Boolean(getRandomInteger(0, 1)),
   rating: generateRating(),
   year: generateYear(),
-  time: '1h 55m',
+  time: generateTime(),
   genre: generateGenre(),
   description: generateDescription(),
   commentsCount: generateCommentsCount(),
+  poster: generatePoster(),
+
 });
 

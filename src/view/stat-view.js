@@ -1,3 +1,3 @@
-export const createStatTemplate = () => (
-  '<p>130 291 movies inside</p>'
+export const createStatTemplate = (all) => (
+  `<p>${all} movies inside</p>`
 );
