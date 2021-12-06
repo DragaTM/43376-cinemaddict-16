@@ -39,7 +39,6 @@ export default class FilmView {
     if (!this.#element) {
       this.#element = createElement(this.template);
     }
-    
     return this.#element;
   }
 

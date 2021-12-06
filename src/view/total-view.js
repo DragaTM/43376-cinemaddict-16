@@ -16,7 +16,6 @@ export default class TotalView {
     if (!this.#element) {
       this.#element = createElement(this.template);
     }
-    
     return this.#element;
   }
 

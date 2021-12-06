@@ -30,12 +30,6 @@ render(siteMainElement, new ContentView().element, renderPosition.BEFOREEND);
 
 const siteFilmsElement = document.querySelector('.films');
 const siteListElement = siteFilmsElement.querySelector('.films-list__container');
-const renderFilm = (film) => {
-  const filmCard = new FilmView(film);
-  const filmDetails = new DetailsView(film);
-
-  render(siteListElement, filmCard.element, renderPosition.BEFOREEND);
-}
 
 for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
 
@@ -46,12 +40,12 @@ for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
     e.preventDefault();
     render(bodyElement, filmDetails.element, renderPosition.BEFOREEND);
     bodyElement.classList.add('hide-overflow');
-    filmDetails.element.querySelector('.film-details__close-btn').addEventListener('click', (e) => {
+    filmDetails.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
       filmDetails.element.remove();
       filmDetails.removeElement();
       bodyElement.classList.remove('hide-overflow');
     });
-  }); 
+  });
 
 }
 
@@ -61,19 +55,17 @@ if (films.length > FILM_COUNT_PER_STEP) {
   const showMoreBtnComponent = new ShowMoreBtnView();
   render(siteListElement, showMoreBtnComponent.element, renderPosition.AFTEREND);
 
-  showMoreBtnComponent.element.addEventListener('click', (e) => {
-    e.preventDefault();
+  showMoreBtnComponent.element.addEventListener('click', () => {
     films
       .slice(renderFilmCount, renderFilmCount + FILM_COUNT_PER_STEP)
       .forEach((film) => {
         const filmCard = new FilmView(film);
         const filmDetails = new DetailsView(film);
         render(siteListElement, filmCard.element, renderPosition.BEFOREEND);
-        filmCard.element.querySelector('.film-card__link').addEventListener('click', (e) => {
-          e.preventDefault();
+        filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
           render(bodyElement, filmDetails.element, renderPosition.BEFOREEND);
           bodyElement.classList.add('hide-overflow');
-          filmDetails.element.querySelector('.film-details__close-btn').addEventListener('click', (e) => {
+          filmDetails.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
             filmDetails.element.remove();
             filmDetails.removeElement();
             bodyElement.classList.remove('hide-overflow');

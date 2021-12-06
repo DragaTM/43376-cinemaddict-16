@@ -46,11 +46,11 @@ const createDetailsTemplate = (film) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">30 March 1945</td>
+                <td class="film-details__cell">30 March ${year}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">1h 18m</td>
+                <td class="film-details__cell">${time}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
@@ -80,7 +80,7 @@ const createDetailsTemplate = (film) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">0</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
 
           <ul class="film-details__comments-list"></ul>
 
@@ -118,34 +118,7 @@ const createDetailsTemplate = (film) => {
         </section>
       </div>
     </form>
-  </section>`
-};
-
-const createFilmTemplate = (film) => {
-  const {name, inWatchlist, isWatched, isFavorite, genre, description, commentsCount, poster, rating, time, year} = film;
-  const watchlistActive = inWatchlist ? ' film-card__controls-item--active' : '';
-  const watchedActive = isWatched ? ' film-card__controls-item--active' : '';
-  const favoriteActive = isFavorite ? ' film-card__controls-item--active' : '';
-
-  return `<article class="film-card">
-    <a class="film-card__link">
-      <h3 class="film-card__title">${name}</h3>
-      <p class="film-card__rating">${rating}</p>
-      <p class="film-card__info">
-        <span class="film-card__year">${year}</span>
-        <span class="film-card__duration">${time}</span>
-        <span class="film-card__genre">${genre}</span>
-      </p>
-      <img src="${poster}" alt="" class="film-card__poster">
-      <p class="film-card__description">${description}</p>
-      <span class="film-card__comments">${commentsCount} comments</span>
-    </a>
-    <div class="film-card__controls">
-      <button class="film-card__controls-item film-card__controls-item--add-to-watchlist${watchlistActive}" type="button">Add to watchlist</button>
-      <button class="film-card__controls-item film-card__controls-item--mark-as-watched${watchedActive}" type="button">Mark as watched</button>
-      <button class="film-card__controls-item film-card__controls-item--favorite${favoriteActive}" type="button">Mark as favorite</button>
-    </div>
-  </article>`;
+  </section>`;
 };
 
 export default class DetailsView {
@@ -160,7 +133,6 @@ export default class DetailsView {
     if (!this.#element) {
       this.#element = createElement(this.template);
     }
-    
     return this.#element;
   }
 

@@ -17,7 +17,6 @@ export default class CommentedView {
     if (!this.#element) {
       this.#element = createElement(this.template);
     }
-    
     return this.#element;
   }
 

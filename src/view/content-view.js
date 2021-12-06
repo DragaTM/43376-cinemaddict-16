@@ -19,7 +19,6 @@ export default class ContentView {
     if (!this.#element) {
       this.#element = createElement(this.template);
     }
-    
     return this.#element;
   }
 

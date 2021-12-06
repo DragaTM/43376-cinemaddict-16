@@ -11,7 +11,6 @@ export default class ShowMoreBtnView {
     if (!this.#element) {
       this.#element = createElement(this.template);
     }
-    
     return this.#element;
   }
 

@@ -24,7 +24,6 @@ export default class ProfileView {
     if (!this.#element) {
       this.#element = createElement(this.template);
     }
-    
     return this.#element;
   }
 
