@@ -1,15 +1,15 @@
 import {createElement} from '../render.js';
 
-const createTotalTemplate = (all) => (
-  `<p>${all} movies inside</p>`
+const createTotalTemplate = (totalCount) => (
+  `<p>${totalCount} movies inside</p>`
 );
 
 export default class TotalView {
   #element = null;
-  #all = null;
+  #totalCount = null;
 
-  constructor(all) {
-    this.#all = all;
+  constructor(totalCount) {
+    this.#totalCount = totalCount;
   }
 
   get element() {
@@ -20,7 +20,7 @@ export default class TotalView {
   }
 
   get template() {
-    return createTotalTemplate(this.#all);
+    return createTotalTemplate(this.#totalCount);
   }
 
   removeElement() {

@@ -103,6 +103,3 @@ for (let i = 0; i < COMMENTED_COUNT; i++) {
 
 const siteFooterStatElement = document.querySelector('.footer__statistics');
 render(siteFooterStatElement, new TotalView(counts.all).element, renderPosition.BEFOREEND);
-//render(siteFooterStatElement, new DetailsView(films[0]).element, renderPosition.AFTEREND);
-
-
