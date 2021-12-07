@@ -1,4 +1,6 @@
-export const createContentTemplate = () => (
+import {createElement} from '../render.js';
+
+const createContentTemplate = () => (
   `<section class="films">
     <section class="films-list">
       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
@@ -9,3 +11,22 @@ export const createContentTemplate = () => (
     </section>
   </section>`
 );
+
+export default class ContentView {
+  #element = null;
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template() {
+    return createContentTemplate();
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

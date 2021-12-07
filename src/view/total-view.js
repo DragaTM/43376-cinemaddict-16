@@ -1,11 +1,16 @@
 import {createElement} from '../render.js';
 
-const createShowMoreBtnTemplate = () => (
-  '<button class="films-list__show-more">Show more</button>'
+const createTotalTemplate = (totalCount) => (
+  `<p>${totalCount} movies inside</p>`
 );
 
-export default class ShowMoreBtnView {
+export default class TotalView {
   #element = null;
+  #totalCount = null;
+
+  constructor(totalCount) {
+    this.#totalCount = totalCount;
+  }
 
   get element() {
     if (!this.#element) {
@@ -15,7 +20,7 @@ export default class ShowMoreBtnView {
   }
 
   get template() {
-    return createShowMoreBtnTemplate();
+    return createTotalTemplate(this.#totalCount);
   }
 
   removeElement() {
