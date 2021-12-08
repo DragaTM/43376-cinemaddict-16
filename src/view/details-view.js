@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from './abstract-view.js';
 
 const createDetailsTemplate = (film) => {
   const {name, inWatchlist, isWatched, isFavorite, genre, description, commentsCount, poster, rating, time, year} = film;
@@ -121,26 +121,15 @@ const createDetailsTemplate = (film) => {
   </section>`;
 };
 
-export default class DetailsView {
-  #element = null;
+export default class DetailsView extends AbstractView{
   #film = null;
 
   constructor(film) {
+    super();
     this.#film = film;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
   }
 
   get template() {
     return createDetailsTemplate(this.#film);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
