@@ -33,7 +33,7 @@ const renderFilm = function(siteListElement, film) {
       remove(filmDetails);
       bodyElement.classList.remove('hide-overflow');
     }
-  }
+  };
   render(siteListElement, filmCard, renderPosition.BEFOREEND);
   filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
     render(bodyElement, filmDetails, renderPosition.BEFOREEND);
@@ -92,12 +92,12 @@ const renderContent = () => {
   for (let i = 0; i < COMMENTED_COUNT; i++) {
     renderFilm(siteCommentedFilmsElement, films[i]);
   }
-}
+};
 
 render(siteHeaderElement, new ProfileView(counts.history), renderPosition.BEFOREEND);
 render(siteMainElement, new MenuView(counts), renderPosition.BEFOREEND);
 if (FILM_COUNT === 0) {
-  render(siteMainElement, new EmptyView(), renderPosition.BEFOREEND);  
+  render(siteMainElement, new EmptyView(), renderPosition.BEFOREEND);
 } else {
   render(siteMainElement, new SortView(), renderPosition.BEFOREEND);
   render(siteMainElement, new ContentView(), renderPosition.BEFOREEND);
