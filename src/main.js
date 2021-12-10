@@ -11,6 +11,7 @@ import TotalView from './view/total-view.js';
 import DetailsView from './view/details-view.js';
 import {render, renderPosition, remove} from './render.js';
 import {generateFilm} from './mock/film.js';
+import {isEscKey} from './utils.js';
 import {FILM_COUNT, FILM_COUNT_PER_STEP} from './const.js';
 
 const bodyElement = document.querySelector('body');
@@ -28,12 +29,13 @@ const renderFilm = function(siteListElement, film) {
   const filmCard = new FilmView(film);
   const filmDetails = new DetailsView(film);
   const onEscKeyDown = (e) => {
-    if (e.key === 'Escape' || e.key === 'Esc') {
+    if (isEscKey(e)) {
       e.preventDefault();
       remove(filmDetails);
       bodyElement.classList.remove('hide-overflow');
     }
   };
+
   render(siteListElement, filmCard, renderPosition.BEFOREEND);
   filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
     render(bodyElement, filmDetails, renderPosition.BEFOREEND);
