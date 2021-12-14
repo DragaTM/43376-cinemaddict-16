@@ -1,3 +1,4 @@
+import {nanoid} from 'nanoid';
 import {getRandomInteger} from '../utils.js';
 
 const generateDescription = () => {
@@ -91,6 +92,7 @@ const generatePoster = () => {
 };
 
 export const generateFilm = () => ({
+  id: nanoid(),
   name: generateName(),
   inWatchlist: Boolean(getRandomInteger(0, 1)),
   isWatched: Boolean(getRandomInteger(0, 1)),
