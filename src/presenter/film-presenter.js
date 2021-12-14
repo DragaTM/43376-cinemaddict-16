@@ -23,9 +23,10 @@ export default class FilmPresenter {
 
     this.#filmCard = new FilmView(film);
     this.#filmDetails = new DetailsView(film);
-    //this.#filmCard.setWatchlistClickHandler(this.#handleWatchlistClick);
-    //this.#filmCard.setWatchedClickHandler(this.#handleWatchedClick);
-    //this.#filmCard.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#filmCard.setWatchlistClickHandler(this.#handleWatchlistClick);
+    this.#filmCard.setWatchedClickHandler(this.#handleWatchedClick);
+    this.#filmCard.setFavoriteClickHandler(this.#handleFavoriteClick);
+
     if (prevFilmCard === null) {
       render(this.#siteListElement, this.#filmCard, renderPosition.BEFOREEND);
       this.#showDetails();
