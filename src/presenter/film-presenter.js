@@ -32,12 +32,12 @@ export default class FilmPresenter {
       this.#showDetails();
       return;
     }
-    remove(prevFilmCard);
 
     if (this.#siteListElement.contains(prevFilmCard.element)) {
       replace(this.#filmCard, prevFilmCard);
     }
     this.#showDetails();
+    remove(prevFilmCard);
   }
 
   #showDetails = () => {

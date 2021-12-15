@@ -46,7 +46,7 @@ export default class MainPresenter {
   }
 
   #renderFilm = (siteListElement, film) => {
-    const filmPresenter = new FilmPresenter(siteListElement, film, this.#handleFilmChange);
+    const filmPresenter = new FilmPresenter(siteListElement, this.#handleFilmChange);
     filmPresenter.init(film);
     this.#filmPresenter.set(film.id, filmPresenter);
   }
@@ -59,7 +59,7 @@ export default class MainPresenter {
 
     const RATED_COUNT = 2;
     for (let i = 0; i < RATED_COUNT; i++) {
-      this.#renderFilm(siteRatedFilmsElement, this.#films[i]);
+      
     }
   }
 
@@ -72,7 +72,7 @@ export default class MainPresenter {
 
     const COMMENTED_COUNT = 2;
     for (let i = 0; i < COMMENTED_COUNT; i++) {
-      this.#renderFilm(siteCommentedFilmsElement, this.#films[i]);
+      
     }
   }
 
