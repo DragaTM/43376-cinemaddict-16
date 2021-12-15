@@ -20,12 +20,16 @@ export default class FilmPresenter {
   init = (film) => {
     this.#film = film;
     const prevFilmCard = this.#filmCard;
+    const prevFilmDetails = this.#filmDetails;
 
     this.#filmCard = new FilmView(film);
     this.#filmDetails = new DetailsView(film);
     this.#filmCard.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#filmCard.setWatchedClickHandler(this.#handleWatchedClick);
     this.#filmCard.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#filmDetails.setWatchlistClickHandler(this.#handleWatchlistClick);
+    this.#filmDetails.setWatchedClickHandler(this.#handleWatchedClick);
+    this.#filmDetails.setFavoriteClickHandler(this.#handleFavoriteClick);
 
     if (prevFilmCard === null) {
       render(this.#siteListElement, this.#filmCard, renderPosition.BEFOREEND);
@@ -36,8 +40,13 @@ export default class FilmPresenter {
     if (this.#siteListElement.contains(prevFilmCard.element)) {
       replace(this.#filmCard, prevFilmCard);
     }
+
+    if (bodyElement.contains(prevFilmDetails.element)) {
+      replace(this.#filmDetails, prevFilmDetails);
+    }
     this.#showDetails();
     remove(prevFilmCard);
+    remove(prevFilmDetails);
   }
 
   #showDetails = () => {

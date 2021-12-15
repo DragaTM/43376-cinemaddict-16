@@ -54,26 +54,11 @@ export default class MainPresenter {
   #renderRated = () => {
     const siteFilmsElement = document.querySelector('.films');
     render(siteFilmsElement, new RatedView(), renderPosition.BEFOREEND);
-
-    const siteRatedFilmsElement = document.querySelector('.films-list--rated .films-list__container');
-
-    const RATED_COUNT = 2;
-    for (let i = 0; i < RATED_COUNT; i++) {
-      
-    }
   }
 
   #renderCommented = () => {
     const siteFilmsElement = document.querySelector('.films');
-
     render(siteFilmsElement, new CommentedView(), renderPosition.BEFOREEND);
-
-    const siteCommentedFilmsElement = document.querySelector('.films-list--commented .films-list__container');
-
-    const COMMENTED_COUNT = 2;
-    for (let i = 0; i < COMMENTED_COUNT; i++) {
-      
-    }
   }
 
   #renderContent = () => {
