@@ -54,11 +54,13 @@ export default class FilmPresenter {
       this.#destroyDetails();
       render(bodyElement, this.#filmDetails, renderPosition.BEFOREEND);
       bodyElement.classList.add('hide-overflow');
-      this.#filmDetails.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
-        this.#destroyDetails();
-      });
+      this.#filmDetails.setCloseClickHandler(this.#destroyDetails);
       document.addEventListener('keydown', this.#onEscKeyDown);
     });
+  }
+
+  #handleLoadMoreButtonClick = () => {
+    remove();
   }
 
   destroy = () => {

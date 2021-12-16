@@ -16,7 +16,7 @@ const counts = {
   history: films.filter((film) => film.isWatched).length,
   favorite: films.filter((film) => film.isFavorite).length,
 };
-const mainPresenter = new MainPresenter();
+const mainPresenter = new MainPresenter(siteMainElement);
 
 render(siteHeaderElement, new ProfileView(counts.history), renderPosition.BEFOREEND);
 render(siteMainElement, new MenuView(counts), renderPosition.BEFOREEND);

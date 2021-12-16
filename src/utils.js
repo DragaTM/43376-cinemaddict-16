@@ -26,3 +26,9 @@ export const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
+
+export const sortDate = () => {
+};
+
+export const sortRating = () => {
+};
