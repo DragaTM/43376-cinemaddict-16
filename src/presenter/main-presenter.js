@@ -121,7 +121,7 @@ export default class MainPresenter {
       case SortType.RATING:
         this.#films.sort((filmA, filmB) => {return filmA.rating - filmB.rating;});
         break;
-      default:
+      case SortType.DEFAULT:
         this.#films = [...this.#soursedFilms];
     }
   }
@@ -134,5 +134,6 @@ export default class MainPresenter {
     this.#sortFilms(sortType);
     this.#clearContent();
     this.#renderContent();
+    this.#currentSortType = sortType;
   }
 }
