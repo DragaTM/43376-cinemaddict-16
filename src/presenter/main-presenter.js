@@ -116,7 +116,7 @@ export default class MainPresenter {
   #sortFilms = (sortType) => {
     switch (sortType) {
       case SortType.DATE:
-        this.#films.sort((filmA, filmB) => {(filmA.year - filmB.year)});
+        this.#films.sort((filmA, filmB) => {(filmA.year - filmB.year;)});
         break;
       case SortType.RATING:
         this.#films.sort((filmA, filmB) => {(filmA.rating - filmB.rating;)});
