@@ -63,12 +63,6 @@ const generateYear = () => {
   return randomYear;
 };
 
-const generateCommentsCount = () => {
-  const randomCommentsCount = getRandomInteger(0, 199);
-
-  return randomCommentsCount;
-};
-
 const generateRating = () => {
   const randomRating = getRandomInteger(0, 100)/10;
 
@@ -91,6 +85,49 @@ const generatePoster = () => {
   return posters[randomIndex];
 };
 
+const generateComments = () => {
+  const randomCount = getRandomInteger(0, 4);
+  const emoji = [
+    './images/emoji/smile.png',
+    './images/emoji/sleeping.png',
+    './images/emoji/puke.png',
+    './images/emoji/angry.png',
+  ];
+
+  const text = [
+    'Interesting setting and a good cast',
+    'Booooooooooring',
+    'Very very old. Meh',
+    'Almost two hours? Seriously?',
+  ];
+
+  const author = [
+    'Tim Macoveev',
+    'John Doe',
+    'Anonim',
+    'Bruce Lee',
+  ];
+
+  const date = [
+    '2019/12/31 23:59',
+    '2 days ago',
+    '2 days ago',
+    'Today',
+  ];
+  const comments = [];
+  for (let i = 0; i < randomCount; i++){
+    const randomIndex = getRandomInteger(0, 3);
+    const comment = {
+      emoji: emoji[randomIndex],
+      text: text[randomIndex],
+      author: author[randomIndex],
+      date: date[randomIndex]
+    };
+    comments.push(comment);
+  }
+  return comments;
+}
+
 export const generateFilm = () => ({
   id: nanoid(),
   name: generateName(),
@@ -102,8 +139,6 @@ export const generateFilm = () => ({
   time: generateTime(),
   genre: generateGenre(),
   description: generateDescription(),
-  commentsCount: generateCommentsCount(),
+  comments: generateComments(),
   poster: generatePoster(),
-
 });
-
