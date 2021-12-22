@@ -59,10 +59,6 @@ export default class FilmPresenter {
     });
   }
 
-  #handleLoadMoreButtonClick = () => {
-    remove();
-  }
-
   destroy = () => {
     remove(this.#filmCard);
   }

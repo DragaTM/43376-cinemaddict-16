@@ -16,7 +16,7 @@ const createCommentTemplate = (comments) => {
         </p>
       </div>
     </li>`;
-  };
+  }
   return commentsTemplate;
 };
 
@@ -146,10 +146,26 @@ export default class DetailsView extends AbstractView{
   constructor(film) {
     super();
     this.#film = film;
+    this._data = DetailsView.parseFilmToData(film);
   }
 
   get template() {
-    return createDetailsTemplate(this.#film);
+    return createDetailsTemplate(this._data);
+  }
+
+  updateData = (update, justDataUpdating) => {
+    if (!update) {
+      return;
+    }
+
+    this._data = {...this._data, ...update};
+
+    if (justDataUpdating) {
+      return;
+    }
+
+    this.updateElement();
+    this.restoreHandlers();
   }
 
   setWatchlistClickHandler = (callback) => {
@@ -177,11 +193,41 @@ export default class DetailsView extends AbstractView{
     this._callback.click();
   }
 
-  static parseFilmToData = (film) => {
-
+  #commentInputHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      textComment: evt.target.value}, true);
   }
 
-  static parseDataToFilm = (data) => {
+  #restoreHandlers = () => {
+    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
+    //добавить внешний обработчик событий для крестика и кнопок InWatchlist, Watched, Favorite
+  }
 
+  updateElement = () => {
+    const prevElement = this.element;
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.element;
+
+    parent.replaceChild(newElement, prevElement);
+    this.restoreHandlers();
+  }
+
+  static parseFilmToData = (film) => ({...film,
+    scrollPosition: 0,
+    activeEmoji: null,
+    textComment: null,
+  })
+
+  static parseDataToFilm = (data) => {
+    const film = {...data};
+
+    delete film.scrollPosition;
+    delete film.activeEmoji;
+    delete film.textComment;
+
+    return film;
   }
 }

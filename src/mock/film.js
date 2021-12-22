@@ -126,7 +126,7 @@ const generateComments = () => {
     comments.push(comment);
   }
   return comments;
-}
+};
 
 export const generateFilm = () => ({
   id: nanoid(),
