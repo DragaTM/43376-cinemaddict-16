@@ -1,9 +1,6 @@
 import AbstractView from './abstract-view.js';
 
-const createCommentTemplate = (comments) => {
-  let commentsTemplate = '';
-  for (const comment of comments) {
-    commentsTemplate = commentsTemplate + `<li class="film-details__comment">
+const createCommentTemplate = (comments) => comments.map((comment) => (`<li class="film-details__comment">
       <span class="film-details__comment-emoji">
         <img src="${comment.emoji}" width="55" height="55" alt="emoji-smile">
       </span>
@@ -15,10 +12,7 @@ const createCommentTemplate = (comments) => {
           <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>
-    </li>`;
-  }
-  return commentsTemplate;
-};
+    </li>`)).join(``);
 
 const createDetailsTemplate = (film) => {
   const {name, inWatchlist, isWatched, isFavorite, genre, description, comments, poster, rating, time, year} = film;
