@@ -12,7 +12,7 @@ const createCommentTemplate = (comments) => comments.map((comment) => (`<li clas
           <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>
-    </li>`)).join(``);
+    </li>`)).join('');
 
 const createDetailsTemplate = (film) => {
   const {name, inWatchlist, isWatched, isFavorite, genre, description, comments, poster, rating, time, year} = film;
