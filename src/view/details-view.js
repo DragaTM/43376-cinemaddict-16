@@ -1,4 +1,4 @@
-import AbstractView from './abstract-view.js';
+import SmartView from './smart-view.js';
 
 const createCommentTemplate = (comments) => comments.map((comment) => (`<li class="film-details__comment">
       <span class="film-details__comment-emoji">
@@ -15,7 +15,7 @@ const createCommentTemplate = (comments) => comments.map((comment) => (`<li clas
     </li>`)).join('');
 
 const createDetailsTemplate = (film) => {
-  const {name, inWatchlist, isWatched, isFavorite, genre, description, comments, poster, rating, time, year} = film;
+  const {name, inWatchlist, isWatched, isFavorite, genre, description, comments, poster, rating, time, year, isEmotion, activeEmoji, textComment} = film;
   const watchlistActive = inWatchlist ? ' film-details__control-button--active' : '';
   const watchedActive = isWatched ? ' film-details__control-button--active' : '';
   const favoriteActive = isFavorite ? ' film-details__control-button--active' : '';
@@ -100,10 +100,10 @@ const createDetailsTemplate = (film) => {
           <ul class="film-details__comments-list">${commentsTemplate}</ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label"></div>
+            <div class="film-details__add-emoji-label">${isEmotion ? `<img src="images/emoji/${activeEmoji}.png" width="55" height="55" alt="emoji-${activeEmoji}">` : ''}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${textComment}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -134,32 +134,19 @@ const createDetailsTemplate = (film) => {
   </section>`;
 };
 
-export default class DetailsView extends AbstractView{
+export default class DetailsView extends SmartView{
   #film = null;
 
   constructor(film) {
     super();
     this.#film = film;
     this._data = DetailsView.parseFilmToData(film);
+
+    this.#setInnerHandlers();
   }
 
   get template() {
     return createDetailsTemplate(this._data);
-  }
-
-  updateData = (update, justDataUpdating) => {
-    if (!update) {
-      return;
-    }
-
-    this._data = {...this._data, ...update};
-
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
-    this.restoreHandlers();
   }
 
   setWatchlistClickHandler = (callback) => {
@@ -179,46 +166,91 @@ export default class DetailsView extends AbstractView{
 
   setCloseClickHandler = (callback) => {
     this._callback.click = callback;
-    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#clickHandler);
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeBtnHandler);
   }
 
-  #clickHandler = (evt) => {
+  #closeBtnHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
   }
 
   #commentInputHandler = (evt) => {
     evt.preventDefault();
+    this.updateData({textComment: evt.target.value}, true);
+  }
+
+  #emojiSmileHandler = (evt) => {
+    evt.preventDefault();
     this.updateData({
-      textComment: evt.target.value}, true);
+      isEmotion: true,
+      activeEmoji: "smile",
+    });
   }
 
-  #restoreHandlers = () => {
-    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
-    //добавить внешний обработчик событий для крестика и кнопок InWatchlist, Watched, Favorite
+  #emojiSleepingHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      isEmotion: true,
+      activeEmoji: "sleeping",
+    });
   }
 
-  updateElement = () => {
-    const prevElement = this.element;
-    const parent = prevElement.parentElement;
-    this.removeElement();
+  #emojiPukeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      isEmotion: true,
+      activeEmoji: "puke",
+    });
+  }
 
-    const newElement = this.element;
+  #emojiAngryHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      isEmotion: true,
+      activeEmoji: "angry",
+    });
+  }
 
-    parent.replaceChild(newElement, prevElement);
-    this.restoreHandlers();
+  #scrollPositionHandler = (evt) => {
+    const a = this.scrollY;
+    console.log(a);
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setCloseClickHandler(this._callback.click);
+  }
+
+  #setInnerHandlers = () => {
+    this.element.querySelector("#emoji-smile").addEventListener('click', this.#emojiSmileHandler);
+    this.element.querySelector("#emoji-sleeping").addEventListener('click', this.#emojiSleepingHandler);
+    this.element.querySelector("#emoji-puke").addEventListener('click', this.#emojiPukeHandler);
+    this.element.querySelector("#emoji-angry").addEventListener('click', this.#emojiAngryHandler);
+    this.element.querySelector(".film-details__comment-input").addEventListener('input', this.#commentInputHandler);
+    this.element.addEventListener('scroll', this.#scrollPositionHandler);
+  }
+
+  reset = (film) => {
+    this.updateData(
+      DetailsView.parseFilmToData(film),
+    );
   }
 
   static parseFilmToData = (film) => ({...film,
     scrollPosition: 0,
-    activeEmoji: null,
-    textComment: null,
+    isEmotion: false,
+    activeEmoji: '',
+    textComment: '',
   })
 
   static parseDataToFilm = (data) => {
     const film = {...data};
 
     delete film.scrollPosition;
+    delete film.isEmotion;
     delete film.activeEmoji;
     delete film.textComment;
 

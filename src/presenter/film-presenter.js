@@ -30,6 +30,7 @@ export default class FilmPresenter {
     this.#filmDetails.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#filmDetails.setWatchedClickHandler(this.#handleWatchedClick);
     this.#filmDetails.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#filmDetails.setCloseClickHandler(this.#destroyDetails);
 
     if (prevFilmCard === null) {
       render(this.#siteListElement, this.#filmCard, renderPosition.BEFOREEND);
@@ -54,7 +55,6 @@ export default class FilmPresenter {
       this.#destroyDetails();
       render(bodyElement, this.#filmDetails, renderPosition.BEFOREEND);
       bodyElement.classList.add('hide-overflow');
-      this.#filmDetails.setCloseClickHandler(this.#destroyDetails);
       document.addEventListener('keydown', this.#onEscKeyDown);
     });
   }
@@ -64,12 +64,9 @@ export default class FilmPresenter {
   }
 
   #destroyDetails = () => {
-    const detailsComponent = bodyElement.querySelector('.film-details');
-
-    if (detailsComponent === null) {
-      return;
-    }
-    detailsComponent.remove();
+    this.#filmDetails.reset(this.#film);
+    this.#filmDetails.element.remove();
+    document.removeEventListener('keydown', this.#onEscKeyDown);
     bodyElement.classList.remove('hide-overflow');
   }
 
