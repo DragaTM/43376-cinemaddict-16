@@ -1,9 +1,9 @@
 import AbstractView from './abstract-view.js';
 
 export default class SmartView extends AbstractView{
-	_data = {};
+  _data = {};
 
-	updateData = (update, justDataUpdating) => {
+  updateData = (update, justDataUpdating) => {
     if (!update) {
       return;
     }
@@ -28,6 +28,7 @@ export default class SmartView extends AbstractView{
       return;
     }
     parent.replaceChild(newElement, prevElement);
+    newElement.scrollTop = this._data.scrollPosition;
     this.restoreHandlers();
   }
 

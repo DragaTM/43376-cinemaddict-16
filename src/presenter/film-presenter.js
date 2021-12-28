@@ -4,6 +4,7 @@ import {render, renderPosition, remove, replace} from '../render.js';
 import {isEscKey} from '../utils.js';
 
 const bodyElement = document.querySelector('body');
+let openedPopup = null;
 
 export default class FilmPresenter {
   #siteListElement = null;
@@ -48,12 +49,14 @@ export default class FilmPresenter {
     this.#showDetails();
     remove(prevFilmCard);
     remove(prevFilmDetails);
+    openedPopup = this.#filmDetails;
   }
 
   #showDetails = () => {
     this.#filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
       this.#destroyDetails();
       render(bodyElement, this.#filmDetails, renderPosition.BEFOREEND);
+      openedPopup = this.#filmDetails;
       bodyElement.classList.add('hide-overflow');
       document.addEventListener('keydown', this.#onEscKeyDown);
     });
@@ -65,7 +68,10 @@ export default class FilmPresenter {
 
   #destroyDetails = () => {
     this.#filmDetails.reset(this.#film);
-    this.#filmDetails.element.remove();
+    if (openedPopup === null) {
+      return;
+    }
+    openedPopup.element.remove();
     document.removeEventListener('keydown', this.#onEscKeyDown);
     bodyElement.classList.remove('hide-overflow');
   }

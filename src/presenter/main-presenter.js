@@ -116,10 +116,10 @@ export default class MainPresenter {
   #sortFilms = (sortType) => {
     switch (sortType) {
       case SortType.DATE:
-        this.#films.sort((filmA, filmB) => {const result = filmA.year - filmB.year; return result;});
+        this.#films.sort((filmA, filmB) => {const result = filmB.year - filmA.year; return result;});
         break;
       case SortType.RATING:
-        this.#films.sort((filmA, filmB) => {const result = filmA.rating - filmB.rating; return result;});
+        this.#films.sort((filmA, filmB) => {const result = filmB.rating - filmA.rating; return result;});
         break;
       default:
         this.#films = [...this.#soursedFilms];

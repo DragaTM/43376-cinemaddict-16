@@ -179,41 +179,38 @@ export default class DetailsView extends SmartView{
     this.updateData({textComment: evt.target.value}, true);
   }
 
-  #emojiSmileHandler = (evt) => {
-    evt.preventDefault();
+  #emojiSmileHandler = () => {
     this.updateData({
       isEmotion: true,
-      activeEmoji: "smile",
+      activeEmoji: 'smile',
     });
   }
 
-  #emojiSleepingHandler = (evt) => {
-    evt.preventDefault();
+  #emojiSleepingHandler = () => {
     this.updateData({
       isEmotion: true,
-      activeEmoji: "sleeping",
+      activeEmoji: 'sleeping',
     });
   }
 
-  #emojiPukeHandler = (evt) => {
-    evt.preventDefault();
+  #emojiPukeHandler = () => {
     this.updateData({
       isEmotion: true,
-      activeEmoji: "puke",
+      activeEmoji: 'puke',
     });
   }
 
-  #emojiAngryHandler = (evt) => {
-    evt.preventDefault();
+  #emojiAngryHandler = () => {
     this.updateData({
       isEmotion: true,
-      activeEmoji: "angry",
+      activeEmoji: 'angry',
     });
   }
 
-  #scrollPositionHandler = (evt) => {
-    const a = this.scrollY;
-    console.log(a);
+  #scrollPositionHandler = () => {
+    this.updateData({
+      scrollPosition: this.element.scrollTop,
+    }, true);
   }
 
   restoreHandlers = () => {
@@ -225,11 +222,11 @@ export default class DetailsView extends SmartView{
   }
 
   #setInnerHandlers = () => {
-    this.element.querySelector("#emoji-smile").addEventListener('click', this.#emojiSmileHandler);
-    this.element.querySelector("#emoji-sleeping").addEventListener('click', this.#emojiSleepingHandler);
-    this.element.querySelector("#emoji-puke").addEventListener('click', this.#emojiPukeHandler);
-    this.element.querySelector("#emoji-angry").addEventListener('click', this.#emojiAngryHandler);
-    this.element.querySelector(".film-details__comment-input").addEventListener('input', this.#commentInputHandler);
+    this.element.querySelector('#emoji-smile').addEventListener('click', this.#emojiSmileHandler);
+    this.element.querySelector('#emoji-sleeping').addEventListener('click', this.#emojiSleepingHandler);
+    this.element.querySelector('#emoji-puke').addEventListener('click', this.#emojiPukeHandler);
+    this.element.querySelector('#emoji-angry').addEventListener('click', this.#emojiAngryHandler);
+    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
     this.element.addEventListener('scroll', this.#scrollPositionHandler);
   }
 
