@@ -23,5 +23,5 @@ const mainPresenter = new MainPresenter(siteMainElement, filmsModel);
 
 render(siteHeaderElement, new ProfileView(counts.history), renderPosition.BEFOREEND);
 render(siteMainElement, new MenuView(counts), renderPosition.BEFOREEND);
-mainPresenter.init(films);
+mainPresenter.init();
 render(siteFooterStatElement, new TotalView(counts.all), renderPosition.BEFOREEND);
