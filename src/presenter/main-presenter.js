@@ -3,13 +3,15 @@ import ContentView from '../view/content-view.js';
 import EmptyView from '../view/empty-view.js';
 import ShowMoreBtnView from '../view/show-more-btn-view.js';
 import RatedView from '../view/rated-view.js';
-import FilmPresenter from './film-presenter.js';
 import CommentedView from '../view/commented-view.js';
+import FilmPresenter from './film-presenter.js';
+import FilmsModel from '../model/films-model.js';
 import {render, renderPosition, remove} from '../render.js';
 import {FILM_COUNT, FILM_COUNT_PER_STEP, SortType} from '../const.js';
 import {updateItem} from '../utils.js';
 
 export default class MainPresenter {
+  #filmsModel = null;
   #emptyComponent = new EmptyView();
   #sortComponent = new SortView();
   #filmListComponent = new ContentView();
@@ -22,8 +24,13 @@ export default class MainPresenter {
   #filmPresenter = new Map();
   #renderedFilmCount = FILM_COUNT_PER_STEP;
 
-  constructor(siteMainElement) {
+  constructor(siteMainElement, filmsModel) {
     this.#siteMainElement = siteMainElement;
+    this.#filmsModel = filmsModel;
+  }
+
+  get films() {
+    return this.#filmsModel.films;
   }
 
   init = (films) => {
