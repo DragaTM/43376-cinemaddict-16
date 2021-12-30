@@ -3,32 +3,43 @@ import ContentView from '../view/content-view.js';
 import EmptyView from '../view/empty-view.js';
 import ShowMoreBtnView from '../view/show-more-btn-view.js';
 import RatedView from '../view/rated-view.js';
-import FilmPresenter from './film-presenter.js';
 import CommentedView from '../view/commented-view.js';
+import FilmPresenter from './film-presenter.js';
+import FilmsModel from '../model/films-model.js';
 import {render, renderPosition, remove} from '../render.js';
 import {FILM_COUNT, FILM_COUNT_PER_STEP, SortType} from '../const.js';
-import {updateItem, sortByYear, sortByRating} from '../utils.js';
+import {sortByYear, sortByRating} from '../utils.js';
 
 export default class MainPresenter {
+  #filmsModel = null;
   #emptyComponent = new EmptyView();
   #sortComponent = new SortView();
   #filmListComponent = new ContentView();
   #showMoreBtnComponent = new ShowMoreBtnView();
   #siteListElement = null;
   #siteMainElement = null;
-  #films = [];
-  #soursedFilms = [];
   #currentSortType = SortType.DEFAULT;
   #filmPresenter = new Map();
   #renderedFilmCount = FILM_COUNT_PER_STEP;
 
-  constructor(siteMainElement) {
+  constructor(siteMainElement, filmsModel) {
     this.#siteMainElement = siteMainElement;
+    this.#filmsModel = filmsModel;
+    this.#filmsModel.addObserver(this.#handleModelEvent);
   }
 
-  init = (films) => {
-    this.#films = [...films];
-    this.#soursedFilms = [...films];
+  get films() {
+    switch (this.#currentSortType) {
+      case SortType.DATE:
+        return [...this.#filmsModel.films].sort(sortByYear);
+      case SortType.RATING:
+        return [...this.#filmsModel.films].sort(sortByRating);
+    }
+
+    return this.#filmsModel.films;
+  }
+
+  init = () => {
 
     if (FILM_COUNT === 0) {
       this.#renderEmpty();
@@ -50,7 +61,7 @@ export default class MainPresenter {
   }
 
   #renderFilm = (siteListElement, film) => {
-    const filmPresenter = new FilmPresenter(siteListElement, this.#handleFilmChange);
+    const filmPresenter = new FilmPresenter(siteListElement, this.#handleViewAction);
     filmPresenter.init(film);
     this.#filmPresenter.set(film.id, filmPresenter);
   }
@@ -71,11 +82,14 @@ export default class MainPresenter {
     const siteFilmsElement = document.querySelector('.films');
     this.#siteListElement = siteFilmsElement.querySelector('.films-list__container');
 
-    for (let i = 0; i < Math.min(this.#films.length, FILM_COUNT_PER_STEP); i++) {
-      this.#renderFilm(this.#siteListElement, this.#films[i]);
-    }
+    const filmCount = this.films.length;
+    const films = this.films.slice(0, Math.min(filmCount, FILM_COUNT_PER_STEP));
+    
+    films.forEach((film) => {
+      this.#renderFilm(this.#siteListElement, film);
+    });
 
-    if (this.#films.length > FILM_COUNT_PER_STEP) {
+    if (filmCount > FILM_COUNT_PER_STEP) {
       this.#renderShowMoreBtn(this.#siteListElement);
     }
   }
@@ -87,15 +101,16 @@ export default class MainPresenter {
   }
 
   #handleShowMoreBtnClick = () => {
-    this.#films
-      .slice(this.#renderedFilmCount, this.#renderedFilmCount + FILM_COUNT_PER_STEP)
-      .forEach((film) => {
-        this.#renderFilm(this.#siteListElement, film);
-      });
+    const filmCount = this.films.length;
+    const newRenderedFilmCount = Math.min(filmCount, this.#renderedFilmCount + FILM_COUNT_PER_STEP);
+    const films = this.films.slice(this.#renderedFilmCount, newRenderedFilmCount);
 
+    films.forEach((film) => {
+      this.#renderFilm(this.#siteListElement, film);
+    });
     this.#renderedFilmCount += FILM_COUNT_PER_STEP;
 
-    if (this.#renderedFilmCount >= this.#films.length) {
+    if (this.#renderedFilmCount >= filmCount) {
       remove(this.#showMoreBtnComponent);
     }
   }
@@ -107,23 +122,20 @@ export default class MainPresenter {
     remove(this.#showMoreBtnComponent);
   }
 
-  #handleFilmChange = (updateFilm) => {
-    this.#films = updateItem(this.#films, updateFilm);
-    this.#soursedFilms = updateItem(this.#soursedFilms, updateItem);
-    this.#filmPresenter.get(updateFilm.id).init(updateFilm);
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
   }
 
-  #sortFilms = (sortType) => {
-    switch (sortType) {
-      case SortType.DATE:
-        this.#films.sort(sortByYear);
-        break;
-      case SortType.RATING:
-        this.#films.sort(sortByRating);
-        break;
-      default:
-        this.#films = [...this.#soursedFilms];
-    }
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -131,7 +143,7 @@ export default class MainPresenter {
       return;
     }
 
-    this.#sortFilms(sortType);
+    this.#currentSortType = sortType;
     this.#clearContent();
     this.#renderContent();
     this.#currentSortType = sortType;

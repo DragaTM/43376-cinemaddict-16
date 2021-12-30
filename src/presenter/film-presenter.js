@@ -2,6 +2,7 @@ import FilmView from '../view/film-view.js';
 import DetailsView from '../view/details-view.js';
 import {render, renderPosition, remove, replace} from '../render.js';
 import {isEscKey} from '../utils.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const bodyElement = document.querySelector('body');
 let openedPopup = null;
@@ -84,14 +85,26 @@ export default class FilmPresenter {
   };
 
   #handleWatchlistClick = () => {
-    this.#changeData({...this.#film, inWatchlist: !this.#film.inWatchlist});
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      {...this.#film, inWatchlist: !this.#film.inWatchlist},
+    );
   }
 
   #handleWatchedClick = () => {
-    this.#changeData({...this.#film, isWatched: !this.#film.isWatched});
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      {...this.#film, isWatched: !this.#film.isWatched},
+    );
   }
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#film, isFavorite: !this.#film.isFavorite});
+    this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      {...this.#film, isFavorite: !this.#film.isFavorite},
+    );
   }
 }
