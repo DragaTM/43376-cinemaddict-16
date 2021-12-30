@@ -107,23 +107,23 @@ const createDetailsTemplate = (film) => {
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-              <label class="film-details__emoji-label" for="emoji-smile">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="smile" value="smile">
+              <label class="film-details__emoji-label" for="smile">
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-              <label class="film-details__emoji-label" for="emoji-sleeping">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="sleeping" value="sleeping">
+              <label class="film-details__emoji-label" for="sleeping">
                 <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-              <label class="film-details__emoji-label" for="emoji-puke">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="puke" value="puke">
+              <label class="film-details__emoji-label" for="puke">
                 <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-              <label class="film-details__emoji-label" for="emoji-angry">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="angry" value="angry">
+              <label class="film-details__emoji-label" for="angry">
                 <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
               </label>
             </div>
@@ -179,31 +179,13 @@ export default class DetailsView extends SmartView{
     this.updateData({textComment: evt.target.value}, true);
   }
 
-  #emojiSmileHandler = () => {
+  #emojiClickHandler = (evt) => {
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
     this.updateData({
       isEmotion: true,
-      activeEmoji: 'smile',
-    });
-  }
-
-  #emojiSleepingHandler = () => {
-    this.updateData({
-      isEmotion: true,
-      activeEmoji: 'sleeping',
-    });
-  }
-
-  #emojiPukeHandler = () => {
-    this.updateData({
-      isEmotion: true,
-      activeEmoji: 'puke',
-    });
-  }
-
-  #emojiAngryHandler = () => {
-    this.updateData({
-      isEmotion: true,
-      activeEmoji: 'angry',
+      activeEmoji: evt.target.id,
     });
   }
 
@@ -222,10 +204,7 @@ export default class DetailsView extends SmartView{
   }
 
   #setInnerHandlers = () => {
-    this.element.querySelector('#emoji-smile').addEventListener('click', this.#emojiSmileHandler);
-    this.element.querySelector('#emoji-sleeping').addEventListener('click', this.#emojiSleepingHandler);
-    this.element.querySelector('#emoji-puke').addEventListener('click', this.#emojiPukeHandler);
-    this.element.querySelector('#emoji-angry').addEventListener('click', this.#emojiAngryHandler);
+    this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#emojiClickHandler);
     this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
     this.element.addEventListener('scroll', this.#scrollPositionHandler);
   }
