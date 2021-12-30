@@ -7,7 +7,7 @@ import FilmPresenter from './film-presenter.js';
 import CommentedView from '../view/commented-view.js';
 import {render, renderPosition, remove} from '../render.js';
 import {FILM_COUNT, FILM_COUNT_PER_STEP, SortType} from '../const.js';
-import {updateItem} from '../utils.js';
+import {updateItem, sortByYear, sortByRating} from '../utils.js';
 
 export default class MainPresenter {
   #emptyComponent = new EmptyView();
@@ -116,10 +116,10 @@ export default class MainPresenter {
   #sortFilms = (sortType) => {
     switch (sortType) {
       case SortType.DATE:
-        this.#films.sort((filmA, filmB) => {const result = filmA.year - filmB.year; return result;});
+        this.#films.sort(sortByYear);
         break;
       case SortType.RATING:
-        this.#films.sort((filmA, filmB) => {const result = filmA.rating - filmB.rating; return result;});
+        this.#films.sort(sortByRating);
         break;
       default:
         this.#films = [...this.#soursedFilms];

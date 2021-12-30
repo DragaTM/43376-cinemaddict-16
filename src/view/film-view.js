@@ -1,7 +1,7 @@
 import AbstractView from './abstract-view.js';
 
 const createFilmTemplate = (film) => {
-  const {name, inWatchlist, isWatched, isFavorite, genre, description, commentsCount, poster, rating, time, year} = film;
+  const {name, inWatchlist, isWatched, isFavorite, genre, description, comments, poster, rating, time, year} = film;
   const watchlistActive = inWatchlist ? ' film-card__controls-item--active' : '';
   const watchedActive = isWatched ? ' film-card__controls-item--active' : '';
   const favoriteActive = isFavorite ? ' film-card__controls-item--active' : '';
@@ -17,7 +17,7 @@ const createFilmTemplate = (film) => {
 			</p>
 			<img src="${poster}" alt="" class="film-card__poster">
 			<p class="film-card__description">${description}</p>
-			<span class="film-card__comments">${commentsCount} comments</span>
+			<span class="film-card__comments">${comments.length} comments</span>
 		</a>
 		<div class="film-card__controls">
 			<button class="film-card__controls-item film-card__controls-item--add-to-watchlist${watchlistActive}" type="button">Add to watchlist</button>
