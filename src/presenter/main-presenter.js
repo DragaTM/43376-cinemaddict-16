@@ -138,6 +138,10 @@ export default class MainPresenter {
     // - обновить всю доску (например, при переключении фильтра)
   }
 
+  #handleFilmChange = (updateFilm) => {
+    this.#filmPresenter.get(updateFilm.id).init(updateFilm);
+  }
+
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType){
       return;
