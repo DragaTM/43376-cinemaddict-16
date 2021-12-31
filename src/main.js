@@ -1,5 +1,4 @@
 import ProfileView from './view/profile-view.js';
-import MenuView from './view/menu-view.js';
 import TotalView from './view/total-view.js';
 import MainPresenter from './presenter/main-presenter.js';
 import FilmsModel from './model/films-model.js';
@@ -19,9 +18,8 @@ const counts = {
 };
 const filmsModel = new FilmsModel();
 filmsModel.films = films;
-const mainPresenter = new MainPresenter(siteMainElement, filmsModel);
+const mainPresenter = new MainPresenter(siteMainElement, filmsModel, counts);
 
 render(siteHeaderElement, new ProfileView(counts.history), renderPosition.BEFOREEND);
-render(siteMainElement, new MenuView(counts), renderPosition.BEFOREEND);
 mainPresenter.init();
 render(siteFooterStatElement, new TotalView(counts.all), renderPosition.BEFOREEND);

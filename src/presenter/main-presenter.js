@@ -1,3 +1,5 @@
+
+import MenuView from '../view/menu-view.js';
 import SortView from '../view/sort-view.js';
 import ContentView from '../view/content-view.js';
 import EmptyView from '../view/empty-view.js';
@@ -7,25 +9,30 @@ import CommentedView from '../view/commented-view.js';
 import FilmPresenter from './film-presenter.js';
 import FilmsModel from '../model/films-model.js';
 import {render, renderPosition, remove} from '../render.js';
-import {FILM_COUNT, FILM_COUNT_PER_STEP, SortType} from '../const.js';
+import {FILM_COUNT, FILM_COUNT_PER_STEP, SortType, UpdateType} from '../const.js';
 import {sortByYear, sortByRating} from '../utils.js';
 
 export default class MainPresenter {
   #filmsModel = null;
+  #menuComponent = null;
   #emptyComponent = new EmptyView();
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #filmListComponent = new ContentView();
   #showMoreBtnComponent = new ShowMoreBtnView();
+  #ratedComponent = new RatedView();
+  #commentedComponent = new CommentedView();
   #siteListElement = null;
   #siteMainElement = null;
   #currentSortType = SortType.DEFAULT;
   #filmPresenter = new Map();
   #renderedFilmCount = FILM_COUNT_PER_STEP;
+  #counts = null;
 
-  constructor(siteMainElement, filmsModel) {
+  constructor(siteMainElement, filmsModel, counts) {
     this.#siteMainElement = siteMainElement;
     this.#filmsModel = filmsModel;
     this.#filmsModel.addObserver(this.#handleModelEvent);
+    this.#counts = counts;
   }
 
   get films() {
@@ -40,7 +47,11 @@ export default class MainPresenter {
   }
 
   init = () => {
+    this.#renderMain();
+  }
 
+  #renderMain = () => {
+    this.#renderMenu();
     if (FILM_COUNT === 0) {
       this.#renderEmpty();
     } else {
@@ -51,11 +62,30 @@ export default class MainPresenter {
     this.#renderCommented();
   }
 
+  #clearMain = () => {
+    remove(this.#menuComponent);
+    if (FILM_COUNT === 0) {
+      remove(this.#emptyComponent);
+    } else {
+      remove(this.#sortComponent);
+      this.#clearContent();
+    }
+    remove(this.#ratedComponent);
+    remove(this.#commentedComponent);
+
+  }
+
+  #renderMenu = () => {
+    this.#menuComponent = new MenuView(this.#counts);
+    render(this.#siteMainElement, this.#menuComponent, renderPosition.BEFOREEND);
+  }
+
   #renderEmpty = () => {
     render(this.#siteMainElement, this.#emptyComponent, renderPosition.BEFOREEND);
   }
 
   #renderSort = () => {
+    this.#sortComponent = new SortView(this.#currentSortType);
     render(this.#siteMainElement, this.#sortComponent, renderPosition.BEFOREEND);
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   }
@@ -68,12 +98,12 @@ export default class MainPresenter {
 
   #renderRated = () => {
     const siteFilmsElement = document.querySelector('.films');
-    render(siteFilmsElement, new RatedView(), renderPosition.BEFOREEND);
+    render(siteFilmsElement, this.#ratedComponent, renderPosition.BEFOREEND);
   }
 
-  #renderCommented = () => {
+  #renderCommented = () => {this.#ratedComponent
     const siteFilmsElement = document.querySelector('.films');
-    render(siteFilmsElement, new CommentedView(), renderPosition.BEFOREEND);
+    render(siteFilmsElement, this.#commentedComponent, renderPosition.BEFOREEND);
   }
 
   #renderContent = () => {
@@ -123,19 +153,25 @@ export default class MainPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
-    console.log(actionType, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
+    this.#filmsModel.updateFilm(updateType, update);
   }
 
   #handleModelEvent = (updateType, data) => {
     console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить карточку фильма если добавился/удалился комментарий
+        this.#filmPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearMain();
+        this.#renderMain();
+        // - обновить список если фильм поменял флаг просмотра, избранного или любимого
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -144,8 +180,7 @@ export default class MainPresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#clearContent();
-    this.#renderContent();
-    this.#currentSortType = sortType;
+    this.#clearMain();
+    this.#renderMain();
   }
 }

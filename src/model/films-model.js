@@ -26,8 +26,4 @@ export default class FilmModel extends AbstractObsevable {
 
     this._notify(updateType, update);
   };
-
-  updateComents = (updateType, update) => {
-    this._notify(updateType, update);
-  };
 }
