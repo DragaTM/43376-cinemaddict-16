@@ -32,7 +32,42 @@ export default class FilmPresenter {
     this.#filmDetails.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#filmDetails.setWatchedClickHandler(this.#handleWatchedClick);
     this.#filmDetails.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#filmDetails.setCloseClickHandler(this.#destroyDetails);
+    this.#filmDetails.setCloseClickHandler(this.destroyDetails);
+
+    if (prevFilmCard === null) {
+      render(this.#siteListElement, this.#filmCard, renderPosition.BEFOREEND);
+      this.#showDetails();
+      return;
+    }
+
+    if (this.#siteListElement.contains(prevFilmCard.element)) {
+      replace(this.#filmCard, prevFilmCard);
+    }
+
+    if (bodyElement.contains(prevFilmDetails.element)) {
+      replace(this.#filmDetails, prevFilmDetails);
+    }
+
+    this.#showDetails();
+    remove(prevFilmCard);
+    remove(prevFilmDetails);
+    openedPopup = this.#filmDetails;
+  }
+
+  patching = (film) => {
+    this.#film = film;
+    const prevFilmCard = this.#filmCard;
+    const prevFilmDetails = this.#filmDetails;
+
+    this.#filmCard = new FilmView(film);
+    this.#filmDetails = new DetailsView(film);
+    this.#filmCard.setWatchlistClickHandler(this.#handleWatchlistClick);
+    this.#filmCard.setWatchedClickHandler(this.#handleWatchedClick);
+    this.#filmCard.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#filmDetails.setWatchlistClickHandler(this.#handleWatchlistClick);
+    this.#filmDetails.setWatchedClickHandler(this.#handleWatchedClick);
+    this.#filmDetails.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#filmDetails.setCloseClickHandler(this.destroyDetails);
 
     if (prevFilmCard === null) {
       render(this.#siteListElement, this.#filmCard, renderPosition.BEFOREEND);
@@ -56,7 +91,7 @@ export default class FilmPresenter {
 
   #showDetails = () => {
     this.#filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
-      this.#destroyDetails();
+      this.destroyDetails();
       render(bodyElement, this.#filmDetails, renderPosition.BEFOREEND);
       openedPopup = this.#filmDetails;
       bodyElement.classList.add('hide-overflow');
@@ -68,7 +103,7 @@ export default class FilmPresenter {
     remove(this.#filmCard);
   }
 
-  #destroyDetails = () => {
+  destroyDetails = () => {
     this.#filmDetails.reset(this.#film);
     if (openedPopup === null) {
       return;
@@ -81,7 +116,7 @@ export default class FilmPresenter {
   #onEscKeyDown = (e) => {
     if (isEscKey(e)) {
       e.preventDefault();
-      this.#destroyDetails();
+      this.destroyDetails();
     }
   };
 

@@ -1,5 +1,3 @@
-
-import MenuView from '../view/menu-view.js';
 import SortView from '../view/sort-view.js';
 import ContentView from '../view/content-view.js';
 import EmptyView from '../view/empty-view.js';
@@ -10,11 +8,11 @@ import FilmPresenter from './film-presenter.js';
 import FilmsModel from '../model/films-model.js';
 import {render, renderPosition, remove} from '../render.js';
 import {FILM_COUNT, FILM_COUNT_PER_STEP, SortType, UpdateType} from '../const.js';
-import {sortByYear, sortByRating} from '../utils.js';
+import {sortByYear, sortByRating, filter} from '../utils.js';
 
 export default class MainPresenter {
   #filmsModel = null;
-  #menuComponent = null;
+  #filterModel = null;
   #emptyComponent = new EmptyView();
   #sortComponent = null;
   #filmListComponent = new ContentView();
@@ -28,22 +26,27 @@ export default class MainPresenter {
   #renderedFilmCount = FILM_COUNT_PER_STEP;
   #counts = null;
 
-  constructor(siteMainElement, filmsModel, counts) {
+  constructor(siteMainElement, filmsModel, filterModel) {
     this.#siteMainElement = siteMainElement;
     this.#filmsModel = filmsModel;
+    this.#filterModel = filterModel;
     this.#filmsModel.addObserver(this.#handleModelEvent);
-    this.#counts = counts;
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get films() {
+    const FilterType = this.#filterModel.filter;
+    const films = this.#filmsModel.films;
+    const filteredFilms = filter[FilterType](films);
+
     switch (this.#currentSortType) {
       case SortType.DATE:
-        return [...this.#filmsModel.films].sort(sortByYear);
+        return filteredFilms.sort(sortByYear);
       case SortType.RATING:
-        return [...this.#filmsModel.films].sort(sortByRating);
+        return filteredFilms.sort(sortByRating);
     }
 
-    return this.#filmsModel.films;
+    return filteredFilms;
   }
 
   init = () => {
@@ -51,7 +54,6 @@ export default class MainPresenter {
   }
 
   #renderMain = () => {
-    this.#renderMenu();
     if (FILM_COUNT === 0) {
       this.#renderEmpty();
     } else {
@@ -63,7 +65,6 @@ export default class MainPresenter {
   }
 
   #clearMain = () => {
-    remove(this.#menuComponent);
     if (FILM_COUNT === 0) {
       remove(this.#emptyComponent);
     } else {
@@ -73,11 +74,6 @@ export default class MainPresenter {
     remove(this.#ratedComponent);
     remove(this.#commentedComponent);
 
-  }
-
-  #renderMenu = () => {
-    this.#menuComponent = new MenuView(this.#counts);
-    render(this.#siteMainElement, this.#menuComponent, renderPosition.BEFOREEND);
   }
 
   #renderEmpty = () => {
@@ -161,14 +157,18 @@ export default class MainPresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         // - обновить карточку фильма если добавился/удалился комментарий
-        this.#filmPresenter.get(data.id).init(data);
+        this.#filmPresenter.get(data.id).patching(data);
         break;
       case UpdateType.MINOR:
+        this.#filmPresenter.forEach((presenter) => presenter.destroyDetails());
         this.#clearMain();
         this.#renderMain();
         // - обновить список если фильм поменял флаг просмотра, избранного или любимого
         break;
       case UpdateType.MAJOR:
+        this.#filmPresenter.forEach((presenter) => presenter.destroyDetails());
+        this.#clearMain();
+        this.#renderMain();
         // - обновить всю доску (например, при переключении фильтра)
         break;
     }
