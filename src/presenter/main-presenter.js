@@ -7,13 +7,13 @@ import CommentedView from '../view/commented-view.js';
 import FilmPresenter from './film-presenter.js';
 import FilmsModel from '../model/films-model.js';
 import {render, renderPosition, remove} from '../render.js';
-import {FILM_COUNT, FILM_COUNT_PER_STEP, SortType, UpdateType} from '../const.js';
+import {FILM_COUNT_PER_STEP, SortType, UpdateType, FilterType} from '../const.js';
 import {sortByYear, sortByRating, filter} from '../utils.js';
 
 export default class MainPresenter {
   #filmsModel = null;
   #filterModel = null;
-  #emptyComponent = new EmptyView();
+  #emptyComponent = null;
   #sortComponent = null;
   #filmListComponent = new ContentView();
   #showMoreBtnComponent = new ShowMoreBtnView();
@@ -22,6 +22,7 @@ export default class MainPresenter {
   #siteListElement = null;
   #siteMainElement = null;
   #currentSortType = SortType.DEFAULT;
+  #filterType = FilterType.ALL;
   #filmPresenter = new Map();
   #renderedFilmCount = FILM_COUNT_PER_STEP;
   #counts = null;
@@ -35,9 +36,9 @@ export default class MainPresenter {
   }
 
   get films() {
-    const FilterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const films = this.#filmsModel.films;
-    const filteredFilms = filter[FilterType](films);
+    const filteredFilms = filter[this.#filterType](films);
 
     switch (this.#currentSortType) {
       case SortType.DATE:
@@ -54,29 +55,32 @@ export default class MainPresenter {
   }
 
   #renderMain = () => {
-    if (FILM_COUNT === 0) {
+    const filmCount = this.films.length;
+
+    if (filmCount === 0) {
       this.#renderEmpty();
     } else {
       this.#renderSort();
       this.#renderContent();
+      this.#renderRated();
+      this.#renderCommented();
     }
-    this.#renderRated();
-    this.#renderCommented();
   }
 
-  #clearMain = () => {
-    if (FILM_COUNT === 0) {
-      remove(this.#emptyComponent);
-    } else {
-      remove(this.#sortComponent);
-      this.#clearContent();
-    }
+  #clearMain = ({resetSortType = false} = {}) => {
+    remove(this.#sortComponent);
+    this.#clearContent();
+    remove(this.#emptyComponent);  
     remove(this.#ratedComponent);
     remove(this.#commentedComponent);
 
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
+    }
   }
 
   #renderEmpty = () => {
+    this.#emptyComponent = new EmptyView(this.#filterType);
     render(this.#siteMainElement, this.#emptyComponent, renderPosition.BEFOREEND);
   }
 
@@ -167,9 +171,8 @@ export default class MainPresenter {
         break;
       case UpdateType.MAJOR:
         this.#filmPresenter.forEach((presenter) => presenter.destroyDetails());
-        this.#clearMain();
+        this.#clearMain({resetSortType: true});
         this.#renderMain();
-        // - обновить всю доску (например, при переключении фильтра)
         break;
     }
   }

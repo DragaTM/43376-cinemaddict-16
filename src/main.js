@@ -16,7 +16,7 @@ const siteFooterStatElement = document.querySelector('.footer__statistics');
 const films = Array.from({length: FILM_COUNT}, generateFilm);
 const counts = {
   all: films.length,
-  history: films.length,
+  history: films.filter((film) => film.isWatched).length,
 };
 const filters = {
   name: 'All movies',
