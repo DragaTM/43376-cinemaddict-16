@@ -6,7 +6,7 @@ const emptyTextType = {
   [FilterType.WATCHLIST]: 'There are no movies to watch now',
   [FilterType.HISTORY]: 'There are no watched movies now',
   [FilterType.FAVORITE]: 'There are no favorite movies now',
-}
+};
 
 const createEmptyTemplate = (filterType) => {
   const emptyTextValue = emptyTextType[filterType];
@@ -15,7 +15,7 @@ const createEmptyTemplate = (filterType) => {
     <section class="films-list">
       <h2 class="films-list__title">${emptyTextValue}</h2>
     </section>
-  </section>`
+  </section>`;
 };
 
 export default class EmptyView extends AbstractView{

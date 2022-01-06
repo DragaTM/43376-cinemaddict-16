@@ -1,5 +1,4 @@
 import ProfileView from './view/profile-view.js';
-import MenuView from './view/menu-view.js';
 import TotalView from './view/total-view.js';
 import MainPresenter from './presenter/main-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
@@ -8,7 +7,6 @@ import FilterModel from './model/filter-model.js';
 import {render, renderPosition} from './render.js';
 import {generateFilm} from './mock/film.js';
 import {FILM_COUNT} from './const.js';
-import {sortByYear, sortByRating} from './utils.js';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -18,11 +16,6 @@ const counts = {
   all: films.length,
   history: films.filter((film) => film.isWatched).length,
 };
-const filters = {
-  name: 'All movies',
-  type: 'all',
-  count: '',
-}
 const filmsModel = new FilmsModel();
 filmsModel.films = films;
 const filterModel = new FilterModel();

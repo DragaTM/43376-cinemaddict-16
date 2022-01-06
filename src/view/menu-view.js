@@ -15,7 +15,7 @@ const createMenuTemplate = (filters, currentFilterType) => {
       <a href="#favorites" class="main-navigation__item ${currentFilterType === FilterType.FAVORITE ? 'main-navigation__item--active' : ''}" data-filter-type="${FilterType.FAVORITE}">${favorite.name} <span class="main-navigation__item-count">${favorite.count}</span></a>
     </div>
     <a href="#stats" class="main-navigation__additional">Stats</a>
-  </nav>`
+  </nav>`;
 };
 
 export default class MenuView extends AbstractView{
@@ -41,7 +41,7 @@ export default class MenuView extends AbstractView{
     if (evt.target.tagName !== 'A') {
       return;
     }
-    
+
     evt.preventDefault();
     this._callback.filterTypeChange(evt.target.dataset.filterType);
   }

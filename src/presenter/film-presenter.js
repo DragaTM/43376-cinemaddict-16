@@ -82,7 +82,7 @@ export default class FilmPresenter {
     if (bodyElement.contains(prevFilmDetails.element)) {
       replace(this.#filmDetails, prevFilmDetails);
     }
-    
+
     this.#showDetails();
     remove(prevFilmCard);
     remove(prevFilmDetails);

@@ -5,7 +5,6 @@ import ShowMoreBtnView from '../view/show-more-btn-view.js';
 import RatedView from '../view/rated-view.js';
 import CommentedView from '../view/commented-view.js';
 import FilmPresenter from './film-presenter.js';
-import FilmsModel from '../model/films-model.js';
 import {render, renderPosition, remove} from '../render.js';
 import {FILM_COUNT_PER_STEP, SortType, UpdateType, FilterType} from '../const.js';
 import {sortByYear, sortByRating, filter} from '../utils.js';
@@ -70,7 +69,7 @@ export default class MainPresenter {
   #clearMain = ({resetSortType = false} = {}) => {
     remove(this.#sortComponent);
     this.#clearContent();
-    remove(this.#emptyComponent);  
+    remove(this.#emptyComponent);
     remove(this.#ratedComponent);
     remove(this.#commentedComponent);
 
@@ -101,7 +100,7 @@ export default class MainPresenter {
     render(siteFilmsElement, this.#ratedComponent, renderPosition.BEFOREEND);
   }
 
-  #renderCommented = () => {this.#ratedComponent
+  #renderCommented = () => {
     const siteFilmsElement = document.querySelector('.films');
     render(siteFilmsElement, this.#commentedComponent, renderPosition.BEFOREEND);
   }
@@ -114,7 +113,7 @@ export default class MainPresenter {
 
     const filmCount = this.films.length;
     const films = this.films.slice(0, Math.min(filmCount, FILM_COUNT_PER_STEP));
-    
+
     films.forEach((film) => {
       this.#renderFilm(this.#siteListElement, film);
     });
@@ -160,14 +159,12 @@ export default class MainPresenter {
     console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить карточку фильма если добавился/удалился комментарий
         this.#filmPresenter.get(data.id).patching(data);
         break;
       case UpdateType.MINOR:
         this.#filmPresenter.forEach((presenter) => presenter.destroyDetails());
         this.#clearMain();
         this.#renderMain();
-        // - обновить список если фильм поменял флаг просмотра, избранного или любимого
         break;
       case UpdateType.MAJOR:
         this.#filmPresenter.forEach((presenter) => presenter.destroyDetails());

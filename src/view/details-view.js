@@ -1,3 +1,4 @@
+import he from 'he';
 import SmartView from './smart-view.js';
 
 const createCommentTemplate = (comments) => comments.map((comment) => (`<li class="film-details__comment">
@@ -103,7 +104,7 @@ const createDetailsTemplate = (film) => {
             <div class="film-details__add-emoji-label">${isEmotion ? `<img src="images/emoji/${activeEmoji}.png" width="55" height="55" alt="emoji-${activeEmoji}">` : ''}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${textComment}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(textComment)}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
