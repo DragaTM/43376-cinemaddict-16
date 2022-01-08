@@ -1,4 +1,5 @@
 import he from 'he';
+import dayjs from 'dayjs';
 import SmartView from './smart-view.js';
 
 const createCommentTemplate = (comments) => comments.map((comment) => (`<li class="film-details__comment">
@@ -170,6 +171,11 @@ export default class DetailsView extends SmartView{
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeBtnHandler);
   }
 
+  setDeleteCommentHandler = (callback) => {
+    this._callback.deleteComment = callback;
+    this.element.querySelector('.film-details__comments-list').addEventListener('click', this._callback.deleteComment);
+  }
+
   #closeBtnHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
@@ -190,6 +196,29 @@ export default class DetailsView extends SmartView{
     });
   }
 
+  deleteCommentHandler = (evt) => {
+    if (evt.target.className !== 'film-details__comment-delete') {
+      return;
+    }
+    evt.preventDefault();
+    const numberOfComment = Array.from(this.element.getElementsByClassName('film-details__comment-delete')).indexOf(evt.target);
+    this.#update(this._data.comments.splice(numberOfComment, 1));
+  }
+
+  addComment = () => {
+    if (this._data.activeEmoji === '' || this._data.text === '') {
+      return;
+    }
+    const newComment = {
+      emoji: `./images/emoji/${this._data.activeEmoji}.png`,
+      text: this._data.textComment,
+      date: dayjs(),
+      author: 'Author',
+    };
+    this._data.comments.push(newComment);
+    this.#update(this._data);
+  }
+
   #scrollPositionHandler = () => {
     this.updateData({
       scrollPosition: this.element.scrollTop,
@@ -202,17 +231,25 @@ export default class DetailsView extends SmartView{
     this.setWatchedClickHandler(this._callback.watchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setCloseClickHandler(this._callback.click);
+    this.setDeleteCommentHandler(this._callback.deleteComment);
   }
 
   #setInnerHandlers = () => {
     this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#emojiClickHandler);
     this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
+    this.element.querySelector('.film-details__comments-list').addEventListener('click', this.deleteCommentHandler);
     this.element.addEventListener('scroll', this.#scrollPositionHandler);
   }
 
   reset = (film) => {
     this.updateData(
       DetailsView.parseFilmToData(film),
+    );
+  }
+
+  #update = (data) => {
+    this.updateData(
+      DetailsView.parseDataToFilm(data),
     );
   }
 

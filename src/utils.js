@@ -15,6 +15,14 @@ export const isEscKey = (e) => {
   }
 };
 
+export const isSubmitKeys = (e) => {
+  if (e.keyCode === 13 && e.ctrlKey) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 export const sortByYear = (filmA, filmB) => filmB.year - filmA.year;
 export const sortByRating = (filmA, filmB) => filmB.rating - filmA.rating;
 

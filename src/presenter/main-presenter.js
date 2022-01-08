@@ -156,7 +156,6 @@ export default class MainPresenter {
   }
 
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         this.#filmPresenter.get(data.id).patching(data);
