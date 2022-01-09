@@ -1,4 +1,4 @@
-import MenuView from '../view/menu-view.js';
+import FilterView from '../view/filter-view.js';
 import {render, renderPosition, replace, remove} from '../render.js';
 import {filter} from '../utils.js';
 import {FilterType, UpdateType} from '../const.js';
@@ -50,11 +50,11 @@ export default class FilterPresenter {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
 
-    this.#filterComponent = new MenuView(filters, this.#filterModel.filter);
+    this.#filterComponent = new FilterView(filters, this.#filterModel.filter);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
-      render(this.#filterContainer, this.#filterComponent, renderPosition.BEFOREEND);
+      render(this.#filterContainer, this.#filterComponent, renderPosition.AFTERBEGIN);
       return;
     }
 

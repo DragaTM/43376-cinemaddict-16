@@ -1,4 +1,5 @@
 import ProfileView from './view/profile-view.js';
+import MenuView from './view/menu-view.js';
 import TotalView from './view/total-view.js';
 import MainPresenter from './presenter/main-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
@@ -16,13 +17,15 @@ const counts = {
   all: films.length,
   history: films.filter((film) => film.isWatched).length,
 };
+const menuComponent = new MenuView();
 const filmsModel = new FilmsModel();
 filmsModel.films = films;
 const filterModel = new FilterModel();
-const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
+const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel);
 const mainPresenter = new MainPresenter(siteMainElement, filmsModel, filterModel);
 
 render(siteHeaderElement, new ProfileView(counts.history), renderPosition.BEFOREEND);
+render(siteMainElement, menuComponent, renderPosition.BEFOREEND);
 filterPresenter.init();
 mainPresenter.init();
 render(siteFooterStatElement, new TotalView(counts.all), renderPosition.BEFOREEND);
