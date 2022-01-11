@@ -30,8 +30,6 @@ export default class MainPresenter {
     this.#siteMainElement = siteMainElement;
     this.#filmsModel = filmsModel;
     this.#filterModel = filterModel;
-    this.#filmsModel.addObserver(this.#handleModelEvent);
-    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get films() {
@@ -50,7 +48,15 @@ export default class MainPresenter {
   }
 
   init = () => {
+    this.#filmsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
     this.#renderMain();
+  }
+
+  destroy = () => {
+    this.#clearMain();
+    this.#filmsModel.removeObserver(this.#handleModelEvent);
+    this.#filterModel.removeObserver(this.#handleModelEvent);   
   }
 
   #renderMain = () => {

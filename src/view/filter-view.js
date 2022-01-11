@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import {FilterType} from '../const.js';
+import {FilterType, MenuItem} from '../const.js';
 
 const createFilterTemplate = (filters, currentFilterType) => {
   const all = filters[0];
@@ -8,10 +8,10 @@ const createFilterTemplate = (filters, currentFilterType) => {
   const favorite = filters[3];
 
   return `<div class="main-navigation__items">
-      <a href="#all" class="main-navigation__item ${currentFilterType === FilterType.ALL ? 'main-navigation__item--active' : ''}" data-filter-type="${FilterType.ALL}">${all.name}</a>
-      <a href="#watchlist" class="main-navigation__item ${currentFilterType === FilterType.WATCHLIST ? 'main-navigation__item--active' : ''}" data-filter-type="${FilterType.WATCHLIST}">${watchlist.name} <span class="main-navigation__item-count">${watchlist.count}</span></a>
-      <a href="#history" class="main-navigation__item ${currentFilterType === FilterType.HISTORY ? 'main-navigation__item--active' : ''}" data-filter-type="${FilterType.HISTORY}">${history.name} <span class="main-navigation__item-count">${history.count}</span></a>
-      <a href="#favorites" class="main-navigation__item ${currentFilterType === FilterType.FAVORITE ? 'main-navigation__item--active' : ''}" data-filter-type="${FilterType.FAVORITE}">${favorite.name} <span class="main-navigation__item-count">${favorite.count}</span></a>
+      <a href="#all" class="main-navigation__item ${currentFilterType === FilterType.ALL ? 'main-navigation__item--active' : ''}" data-filter-type="${FilterType.ALL}" data-menu-item="${MenuItem.FILMS}">${all.name}</a>
+      <a href="#watchlist" class="main-navigation__item ${currentFilterType === FilterType.WATCHLIST ? 'main-navigation__item--active' : ''}" data-filter-type="${FilterType.WATCHLIST}" data-menu-item="${MenuItem.FILMS}">${watchlist.name} <span class="main-navigation__item-count">${watchlist.count}</span></a>
+      <a href="#history" class="main-navigation__item ${currentFilterType === FilterType.HISTORY ? 'main-navigation__item--active' : ''}" data-filter-type="${FilterType.HISTORY}" data-menu-item="${MenuItem.FILMS}">${history.name} <span class="main-navigation__item-count">${history.count}</span></a>
+      <a href="#favorites" class="main-navigation__item ${currentFilterType === FilterType.FAVORITE ? 'main-navigation__item--active' : ''}" data-filter-type="${FilterType.FAVORITE}" data-menu-item="${MenuItem.FILMS}">${favorite.name} <span class="main-navigation__item-count">${favorite.count}</span></a>
     </div>`;
 };
 
