@@ -39,7 +39,6 @@ export const isEscKey = (e) => {
   }
 };
 
-
 export const isSubmitKeys = (e) => e.keyCode === 13 && e.ctrlKey;
 
 export const isClickOnLink = (e) => {
