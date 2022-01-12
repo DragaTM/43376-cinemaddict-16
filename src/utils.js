@@ -1,3 +1,5 @@
+import {FilterType} from './const.js';
+
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -5,27 +7,12 @@ export const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-export const isEscKey = (e) => {
-  if (e.key === 'Escape' || e.key === 'Esc') {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-export const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
 export const sortByYear = (filmA, filmB) => filmB.year - filmA.year;
 export const sortByRating = (filmA, filmB) => filmB.rating - filmA.rating;
+
+export const filter = {
+  [FilterType.ALL]: (films) => films,
+  [FilterType.WATCHLIST]: (films) => films.filter((film) => film.inWatchlist),
+  [FilterType.HISTORY]: (films) => films.filter((film) => film.isWatched),
+  [FilterType.FAVORITE]: (films) => films.filter((film) => film.isFavorite),
+};
