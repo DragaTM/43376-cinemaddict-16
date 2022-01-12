@@ -39,13 +39,7 @@ export const isEscKey = (e) => {
   }
 };
 
-export const isSubmitKeys = (e) => {
-  if (e.keyCode === 13 && e.ctrlKey) {
-    return true;
-  } else {
-    return false;
-  }
-};
+export const isSubmitKeys = (e) => e.keyCode === 13 && e.ctrlKey;
 
 export const isClickOnLink = (e) => {
   if (e.target.tagName !== 'A') {
