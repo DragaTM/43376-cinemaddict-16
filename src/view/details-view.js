@@ -1,7 +1,7 @@
 import he from 'he';
 import dayjs from 'dayjs';
 import SmartView from './smart-view.js';
-import {isOnEmojiClick} from '../const.js';
+import {isClickOnInput} from '../const.js';
 
 const createCommentTemplate = (comments) => comments.map((comment) => (`<li class="film-details__comment">
       <span class="film-details__comment-emoji">
@@ -188,7 +188,7 @@ export default class DetailsView extends SmartView{
   }
 
   #emojiClickHandler = (evt) => {
-    if (isOnEmojiClick(evt)) {
+    if (isClickOnInput(evt)) {
       return;
     }
     this.updateData({

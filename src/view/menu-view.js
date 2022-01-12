@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import {MenuItem, isClickOnTab} from '../const.js';
+import {MenuItem, isClickOnLink} from '../const.js';
 
 const createMenuTemplate = () => (
   `<nav class="main-navigation">
@@ -18,7 +18,7 @@ export default class MenuView extends AbstractView{
   };
 
   #menuClickHandler = (e) => {
-    if (isClickOnTab(e)) {
+    if (isClickOnLink(e)) {
       return;
     }
 

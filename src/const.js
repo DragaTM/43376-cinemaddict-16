@@ -47,7 +47,7 @@ export const isSubmitKeys = (e) => {
   }
 };
 
-export const isClickOnTab = (e) => {
+export const isClickOnLink = (e) => {
   if (e.target.tagName !== 'A') {
     return true;
   } else {
@@ -55,7 +55,7 @@ export const isClickOnTab = (e) => {
   }
 };
 
-export const isOnEmojiClick = (e) => {
+export const isClickOnInput = (e) => {
   if (e.target.tagName !== 'INPUT') {
     return true;
   } else {
