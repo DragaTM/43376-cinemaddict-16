@@ -56,7 +56,7 @@ export default class MainPresenter {
   destroy = () => {
     this.#clearMain();
     this.#filmsModel.removeObserver(this.#handleModelEvent);
-    this.#filterModel.removeObserver(this.#handleModelEvent);   
+    this.#filterModel.removeObserver(this.#handleModelEvent);
   }
 
   #renderMain = () => {
@@ -72,7 +72,7 @@ export default class MainPresenter {
     }
   }
 
-  #clearMain = ({resetSortType = false} = {}) => {
+  #clearMain = (resetSortType = false) => {
     remove(this.#sortComponent);
     this.#clearContent();
     remove(this.#emptyComponent);

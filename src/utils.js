@@ -7,22 +7,6 @@ export const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-export const isEscKey = (e) => {
-  if (e.key === 'Escape' || e.key === 'Esc') {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-export const isSubmitKeys = (e) => {
-  if (e.keyCode === 13 && e.ctrlKey) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
 export const sortByYear = (filmA, filmB) => filmB.year - filmA.year;
 export const sortByRating = (filmA, filmB) => filmB.rating - filmA.rating;
 

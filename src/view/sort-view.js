@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import {SortType} from '../const.js';
+import {SortType, isClickOnTab} from '../const.js';
 
 const createSortTemplate = (currentSortType) => (
   `<ul class="sort">
@@ -26,12 +26,12 @@ export default class SortView extends AbstractView{
     this.element.addEventListener('click', this.#sortTypeChangeHandler);
   }
 
-  #sortTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'A') {
+  #sortTypeChangeHandler = (e) => {
+    if (isClickOnTab(e)) {
       return;
     }
 
-    evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
+    e.preventDefault();
+    this._callback.sortTypeChange(e.target.dataset.sortType);
   }
 }

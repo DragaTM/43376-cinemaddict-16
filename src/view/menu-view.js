@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import {MenuItem} from '../const.js';
+import {MenuItem, isClickOnTab} from '../const.js';
 
 const createMenuTemplate = () => (
   `<nav class="main-navigation">
@@ -17,12 +17,12 @@ export default class MenuView extends AbstractView{
     this.element.addEventListener('click', this.#menuClickHandler);
   };
 
-  #menuClickHandler = (evt) => {
-    if (evt.target.tagName !== 'A') {
+  #menuClickHandler = (e) => {
+    if (isClickOnTab(e)) {
       return;
     }
 
-    evt.preventDefault();
-    this._callback.menuClick(evt.target.dataset.menuItem);
+    e.preventDefault();
+    this._callback.menuClick(e.target.dataset.menuItem);
   }
 }

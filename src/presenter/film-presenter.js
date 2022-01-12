@@ -1,8 +1,7 @@
 import FilmView from '../view/film-view.js';
 import DetailsView from '../view/details-view.js';
 import {render, renderPosition, remove, replace} from '../render.js';
-import {isEscKey, isSubmitKeys} from '../utils.js';
-import {UserAction, UpdateType} from '../const.js';
+import {UserAction, UpdateType, isEscKey, isSubmitKeys} from '../const.js';
 
 const bodyElement = document.querySelector('body');
 let openedPopup = null;

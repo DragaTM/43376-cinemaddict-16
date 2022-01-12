@@ -62,7 +62,6 @@ export default class StatsView extends SmartView {
     this._data = {
       films
     };
-    console.log(this._data);
     this.#setCharts();
   }
 
@@ -83,7 +82,6 @@ export default class StatsView extends SmartView {
     const BAR_HEIGHT = 50;
     const statisticCtx = this.element.querySelector('.statistic__chart');
 
-    // Обязательно рассчитайте высоту canvas, она зависит от количества элементов диаграммы
     statisticCtx.height = BAR_HEIGHT * 5;
 
     const myChart = new Chart(statisticCtx, {

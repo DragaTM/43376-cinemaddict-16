@@ -30,3 +30,35 @@ export const MenuItem = {
   FILMS: 'FILMS',
   STATS: 'STATS',
 };
+
+export const isEscKey = (e) => {
+  if (e.key === 'Escape' || e.key === 'Esc') {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const isSubmitKeys = (e) => {
+  if (e.keyCode === 13 && e.ctrlKey) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const isClickOnTab = (e) => {
+  if (e.target.tagName !== 'A') {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const isOnEmojiClick = (e) => {
+  if (e.target.tagName !== 'INPUT') {
+    return true;
+  } else {
+    return false;
+  }
+};
