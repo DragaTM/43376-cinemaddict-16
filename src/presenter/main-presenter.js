@@ -5,6 +5,7 @@ import ShowMoreBtnView from '../view/show-more-btn-view.js';
 import RatedView from '../view/rated-view.js';
 import CommentedView from '../view/commented-view.js';
 import FilmPresenter from './film-presenter.js';
+import DetailsPresenter from './details-presenter.js';
 import {render, renderPosition, remove} from '../render.js';
 import {FILM_COUNT_PER_STEP, SortType, UpdateType, FilterType} from '../const.js';
 import {sortByYear, sortByRating, filter} from '../utils.js';
@@ -25,6 +26,8 @@ export default class MainPresenter {
   #filmPresenter = new Map();
   #renderedFilmCount = FILM_COUNT_PER_STEP;
   #counts = null;
+  #detailsPresenter = null;
+  #detailsId = null;
 
   constructor(siteMainElement, filmsModel, filterModel) {
     this.#siteMainElement = siteMainElement;
@@ -97,8 +100,22 @@ export default class MainPresenter {
 
   #renderFilm = (siteListElement, film) => {
     const filmPresenter = new FilmPresenter(siteListElement, this.#handleViewAction);
-    filmPresenter.init(film);
+    filmPresenter.init(film, this.#openDetails);
     this.#filmPresenter.set(film.id, filmPresenter);
+  }
+
+  #openDetails = (film) => {
+    this.#closeDetails();
+    this.#detailsPresenter = new DetailsPresenter(this.#handleViewAction);
+    this.#detailsPresenter.init(film);
+    this.#detailsId = film.id;
+  }
+
+  #closeDetails = () => {
+    if (this.#detailsPresenter !== null) {
+      this.#detailsPresenter.destroy();
+      this.#detailsId = null;
+    }
   }
 
   #renderRated = () => {
@@ -164,17 +181,22 @@ export default class MainPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#filmPresenter.get(data.id).patching(data);
+        this.#filmPresenter.get(data.id).init(data);
+        this.#detailsPresenter.init(data);
         break;
       case UpdateType.MINOR:
-        this.#filmPresenter.forEach((presenter) => presenter.destroyDetails());
         this.#clearMain();
         this.#renderMain();
+        if (this.#detailsId === data.id) {
+          this.#detailsPresenter.init(data);
+        }
         break;
       case UpdateType.MAJOR:
-        this.#filmPresenter.forEach((presenter) => presenter.destroyDetails());
         this.#clearMain({resetSortType: true});
         this.#renderMain();
+        if (this.#detailsId === data.id) {
+          this.#detailsPresenter.init(data);
+        }
         break;
     }
   }
