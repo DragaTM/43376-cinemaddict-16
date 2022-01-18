@@ -11,14 +11,7 @@ const emptyTextType = {
 const createEmptyTemplate = (filterType) => {
   const emptyTextValue = emptyTextType[filterType];
 
-  return `<section class="films">
-    <section class="films-list">
-      <h2 class="films-list__title">${emptyTextValue}</h2>
-      <div class="films-list__container">
-        
-      </div>
-    </section>
-  </section>`;
+  return `<h2 class="films-list__title">${emptyTextValue}</h2>`;
 };
 
 export default class EmptyView extends AbstractView{
