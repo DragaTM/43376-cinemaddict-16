@@ -4,6 +4,7 @@ import EmptyView from '../view/empty-view.js';
 import ShowMoreBtnView from '../view/show-more-btn-view.js';
 import RatedView from '../view/rated-view.js';
 import CommentedView from '../view/commented-view.js';
+import LoadingView from '../view/loading-view.js';
 import FilmPresenter from './film-presenter.js';
 import DetailsPresenter from './details-presenter.js';
 import {render, renderPosition, remove} from '../render.js';
@@ -15,12 +16,14 @@ export default class MainPresenter {
   #filterModel = null;
   #emptyComponent = null;
   #sortComponent = null;
+  #loadingComponent = new LoadingView();
   #filmListComponent = new ContentView();
   #showMoreBtnComponent = new ShowMoreBtnView();
   #ratedComponent = new RatedView();
   #commentedComponent = new CommentedView();
   #siteListElement = null;
   #siteMainElement = null;
+  #siteFilmsElement = null;
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
   #filmPresenter = new Map();
@@ -28,6 +31,7 @@ export default class MainPresenter {
   #counts = null;
   #detailsPresenter = null;
   #detailsId = null;
+  #isLoading = true;
 
   constructor(siteMainElement, filmsModel, filterModel) {
     this.#siteMainElement = siteMainElement;
@@ -68,6 +72,7 @@ export default class MainPresenter {
     if (filmCount === 0) {
       this.#renderEmpty();
     } else {
+      remove(this.#emptyComponent);
       this.#renderSort();
       this.#renderContent();
       this.#renderRated();
@@ -90,6 +95,11 @@ export default class MainPresenter {
   #renderEmpty = () => {
     this.#emptyComponent = new EmptyView(this.#filterType);
     render(this.#siteMainElement, this.#emptyComponent, renderPosition.BEFOREEND);
+  }
+
+  #renderLoading = () => {
+    render(this.#siteFilmsElement, this.#loadingComponent, renderPosition.AFTERBEGIN);
+    console.log(this.#loadingComponent);
   }
 
   #renderSort = () => {
@@ -119,20 +129,24 @@ export default class MainPresenter {
   }
 
   #renderRated = () => {
-    const siteFilmsElement = document.querySelector('.films');
-    render(siteFilmsElement, this.#ratedComponent, renderPosition.BEFOREEND);
+    render(this.#siteFilmsElement, this.#ratedComponent, renderPosition.BEFOREEND);
   }
 
   #renderCommented = () => {
-    const siteFilmsElement = document.querySelector('.films');
-    render(siteFilmsElement, this.#commentedComponent, renderPosition.BEFOREEND);
+    render(this.#siteFilmsElement, this.#commentedComponent, renderPosition.BEFOREEND);
   }
 
   #renderContent = () => {
     render(this.#siteMainElement, this.#filmListComponent, renderPosition.BEFOREEND);
 
-    const siteFilmsElement = document.querySelector('.films');
-    this.#siteListElement = siteFilmsElement.querySelector('.films-list__container');
+    this.#siteFilmsElement = document.querySelector('.films');
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
+    this.#siteListElement = this.#siteFilmsElement.querySelector('.films-list__container');
 
     const filmCount = this.films.length;
     const films = this.films.slice(0, Math.min(filmCount, FILM_COUNT_PER_STEP));
@@ -197,6 +211,11 @@ export default class MainPresenter {
         if (this.#detailsId === data.id) {
           this.#detailsPresenter.init(data);
         }
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderMain();
         break;
     }
   }
