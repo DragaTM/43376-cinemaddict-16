@@ -23,7 +23,6 @@ export default class MainPresenter {
   #commentedComponent = new CommentedView();
   #siteMainElement = null;
   #statusMessage = null;
-  #siteFilmsElement = null;
   #mainElement = null;
   #filmListElement = null;
   #currentSortType = SortType.DEFAULT;
@@ -77,10 +76,16 @@ export default class MainPresenter {
     this.#statusMessage = this.#mainElement.querySelector('.films-list');
   }
 
-  #renderContent = () => {
+  #renderContent = (resetSortType = false) => {
     if (this.#isLoading) {
       this.#renderLoading();
       return;
+    }
+
+    this.#clearContent();
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
     }
 
     const filmCount = this.films.length;
@@ -131,6 +136,7 @@ export default class MainPresenter {
 
   #renderSort = () => {
     this.#sortComponent = new SortView(this.#currentSortType);
+    console.log(this.#currentSortType);
     render(this.#mainElement, this.#sortComponent, renderPosition.BEFOREBEGIN);
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   }
@@ -202,15 +208,13 @@ export default class MainPresenter {
         this.#detailsPresenter.init(data);
         break;
       case UpdateType.MINOR:
-        this.#clearContent();
         this.#renderContent();
         if (this.#detailsId === data.id) {
           this.#detailsPresenter.init(data);
         }
         break;
       case UpdateType.MAJOR:
-        this.#clearContent({resetSortType: true});
-        this.#renderContent();
+        this.#renderContent({resetSortType: true});
         if (this.#detailsId === data.id) {
           this.#detailsPresenter.init(data);
         }
@@ -229,7 +233,6 @@ export default class MainPresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#clearFilmList();
-    this.#renderFilmList();
+    this.#renderContent();
   }
 }
