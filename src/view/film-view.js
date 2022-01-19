@@ -1,10 +1,11 @@
 import AbstractView from './abstract-view.js';
 
 const createFilmTemplate = (film) => {
-  const {name, inWatchlist, isWatched, isFavorite, genre, description, comments, poster, rating, time, year} = film;
+  const {name, inWatchlist, isWatched, isFavorite, genre, description, comments, poster, rating, time, releaseDate} = film;
   const watchlistActive = inWatchlist ? ' film-card__controls-item--active' : '';
   const watchedActive = isWatched ? ' film-card__controls-item--active' : '';
   const favoriteActive = isFavorite ? ' film-card__controls-item--active' : '';
+  const year = releaseDate.getFullYear();
 
   return `<article class="film-card">
 		<a class="film-card__link">

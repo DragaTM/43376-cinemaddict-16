@@ -59,7 +59,7 @@ export default class FilmModel extends AbstractObsevable {
       actors: film.film_info['actors'],
       genre: film.film_info['genre'],
       country: film.film_info.release['release_country'],
-      runtime: film.film_info['runtime'],
+      time: film.film_info['runtime'],
       writers: film.film_info['writers'],
     };
 

@@ -136,7 +136,6 @@ export default class MainPresenter {
 
   #renderSort = () => {
     this.#sortComponent = new SortView(this.#currentSortType);
-    console.log(this.#currentSortType);
     render(this.#mainElement, this.#sortComponent, renderPosition.BEFOREBEGIN);
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   }
