@@ -9,7 +9,7 @@ import FilmPresenter from './film-presenter.js';
 import DetailsPresenter from './details-presenter.js';
 import {render, renderPosition, remove} from '../render.js';
 import {FILM_COUNT_PER_STEP, SortType, UpdateType, FilterType} from '../const.js';
-import {sortByYear, sortByRating, filter} from '../utils.js';
+import {sortByDate, sortByRating, filter} from '../utils.js';
 
 export default class MainPresenter {
   #filmsModel = null;
@@ -47,7 +47,7 @@ export default class MainPresenter {
 
     switch (this.#currentSortType) {
       case SortType.DATE:
-        return filteredFilms.sort(sortByYear);
+        return filteredFilms.sort(sortByDate);
       case SortType.RATING:
         return filteredFilms.sort(sortByRating);
     }
@@ -64,6 +64,8 @@ export default class MainPresenter {
   }
 
   destroy = () => {
+    remove(this.#mainComponent);
+
     this.#filmsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
   }

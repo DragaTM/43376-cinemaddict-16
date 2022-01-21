@@ -45,10 +45,13 @@ const counts = {
 };
 
 render(siteHeaderElement, new ProfileView(counts.history), renderPosition.BEFOREEND);
-render(siteMainElement, menuComponent, renderPosition.BEFOREEND);
-menuComponent.setMenuClickHandler(handleMenuClick);
+
 filterPresenter.init();
 mainPresenter.init();
-render(siteFooterStatElement, new TotalView(counts.all), renderPosition.BEFOREEND);
 
-filmsModel.init();
+filmsModel.init().finally(() => {
+  render(siteMainElement, menuComponent, renderPosition.AFTERBEGIN);
+  menuComponent.setMenuClickHandler(handleMenuClick);
+});
+
+render(siteFooterStatElement, new TotalView(counts.all), renderPosition.BEFOREEND);

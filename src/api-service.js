@@ -19,9 +19,9 @@ export default class ApiService {
 
   updateFilm = async (film) => {
     const response = await this.#load({
-      url: `tasks/${task.id}`,
+      url: `movies/${film.id}`,
       method: Method.PUT,
-      body: JSON.stringify(film),
+      body: JSON.stringify(this.#adaptToServer(film)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
@@ -49,6 +49,54 @@ export default class ApiService {
     } catch (err) {
       ApiService.catchError(err);
     }
+  }
+
+  #adaptToServer = (film) => {
+    const adaptedFilm = {...film,
+      film_info: {
+        title: film['name'],
+        alternative_title: film['alternativeName'],
+        age_rating: film['ageRating'],
+        description: film['description'],
+        director: film['director'],
+        poster: film['poster'],
+        total_rating: film['rating'],
+        actors: film['actors'],
+        genre: film['genre'],
+        runtime: film['time'],
+        writers: film['writers'],
+        release: {
+          release_country: film['country'],
+          date: film['releaseDate'].toISOString(),
+        },
+      },
+      user_details: {
+        watching_date: film['watchingDate'] !== null ? film['watchingDate'].toISOString() : film['watchingDate'],
+        already_watched: film['isWatched'],
+        favorite: film['isFavorite'],
+        watchlist: film['inWatchlist'],
+      }
+    };
+
+    delete adaptedFilm.watchingDate;
+    delete adaptedFilm.releaseDate;
+    delete adaptedFilm.name;
+    delete adaptedFilm.alternativeName;
+    delete adaptedFilm.ageRating;
+    delete adaptedFilm.isWatched;
+    delete adaptedFilm.isFavorite;
+    delete adaptedFilm.inWatchlist;
+    delete adaptedFilm.description;
+    delete adaptedFilm.director;
+    delete adaptedFilm.poster;
+    delete adaptedFilm.rating;
+    delete adaptedFilm.actors;
+    delete adaptedFilm.genre;
+    delete adaptedFilm.country;
+    delete adaptedFilm.time;
+    delete adaptedFilm.writers;
+
+    return adaptedFilm;
   }
 
   static parseResponse = (response) => response.json();

@@ -25,20 +25,27 @@ export default class FilmModel extends AbstractObsevable {
     this._notify(UpdateType.INIT);
   }
 
-  updateFilm = (updateType, update) => {
+  updateFilm = async (updateType, update) => {
     const index = this.#films.findIndex((film) => film.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting film');
     }
 
-    this.#films = [
-      ...this.#films.slice(0, index),
-      update,
-      ...this.#films.slice(index + 1),
-    ];
+    try {
+      const response = await this.#apiService.updateFilm(update);
+      const updatedFilm = this.#adaptToClient(response);
 
-    this._notify(updateType, update);
+      this.#films = [
+        ...this.#films.slice(0, index),
+        updatedFilm,
+        ...this.#films.slice(index + 1),
+      ];
+
+      this._notify(updateType, updatedFilm);
+    } catch(err) {
+      throw new Error('Can\'t update film');
+    }
   };
 
   #adaptToClient = (film) => {
@@ -51,7 +58,6 @@ export default class FilmModel extends AbstractObsevable {
       isWatched: film.user_details['already_watched'],
       isFavorite: film.user_details['favorite'],
       inWatchlist: film.user_details['watchlist'],
-      ageRating: film.film_info['age_rating'],
       description: film.film_info['description'],
       director: film.film_info['director'],
       poster: film.film_info['poster'],

@@ -2,6 +2,7 @@ import he from 'he';
 import dayjs from 'dayjs';
 import SmartView from './smart-view.js';
 import {isClickOnInput} from '../const.js';
+import {transformArrayToString, transformMinutesToHours} from '../utils.js';
 
 const createCommentTemplate = (comments) => comments.map((comment) => (`<li class="film-details__comment">
       <span class="film-details__comment-emoji">
@@ -23,7 +24,11 @@ const createDetailsTemplate = (film) => {
   const watchedActive = isWatched ? ' film-details__control-button--active' : '';
   const favoriteActive = isFavorite ? ' film-details__control-button--active' : '';
   const commentsTemplate = createCommentTemplate(comments);
-  const date = releaseDate;
+  const date = dayjs(releaseDate).format('D MMMM YYYY');
+  const actorsList = transformArrayToString(actors);
+  const writersList = transformArrayToString(writers);
+  const runTime = transformMinutesToHours(time);
+  const genres = genre.map((genreItem) => `<span class="film-details__genre">${genreItem}</span>`).join('');
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -57,11 +62,11 @@ const createDetailsTemplate = (film) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Writers</td>
-                <td class="film-details__cell">${writers}</td>
+                <td class="film-details__cell">${writersList}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Actors</td>
-                <td class="film-details__cell">${actors}</td>
+                <td class="film-details__cell">${actorsList}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
@@ -69,7 +74,7 @@ const createDetailsTemplate = (film) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${time}</td>
+                <td class="film-details__cell">${runTime}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
@@ -78,7 +83,7 @@ const createDetailsTemplate = (film) => {
               <tr class="film-details__row">
                 <td class="film-details__term">Genres</td>
                 <td class="film-details__cell">
-                  <span class="film-details__genre">${genre}</span></td>
+                  ${genres}</td>
               </tr>
             </table>
 
