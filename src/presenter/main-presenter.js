@@ -1,3 +1,4 @@
+import ProfileView from '../view/profile-view.js';
 import SortView from '../view/sort-view.js';
 import MainView from '../view/main-view.js';
 import EmptyView from '../view/empty-view.js';
@@ -7,15 +8,19 @@ import CommentedView from '../view/commented-view.js';
 import LoadingView from '../view/loading-view.js';
 import FilmPresenter from './film-presenter.js';
 import DetailsPresenter from './details-presenter.js';
+import TotalView from '../view/total-view.js';
 import {render, renderPosition, remove} from '../render.js';
 import {FILM_COUNT_PER_STEP, SortType, UpdateType, FilterType} from '../const.js';
-import {sortByDate, sortByRating, filter} from '../utils.js';
+import {sortByDate, sortByRating, sortById, filter} from '../utils.js';
+const siteHeaderElement = document.querySelector('.header');
+const siteFooterStatElement = document.querySelector('.footer__statistics');
 
 export default class MainPresenter {
   #filmsModel = null;
   #filterModel = null;
   #emptyComponent = null;
   #sortComponent = null;
+  #profileComponent = null;
   #loadingComponent = new LoadingView();
   #mainComponent = new MainView();
   #showMoreBtnComponent = new ShowMoreBtnView();
@@ -29,7 +34,6 @@ export default class MainPresenter {
   #filterType = FilterType.ALL;
   #filmPresenter = new Map();
   #renderedFilmCount = FILM_COUNT_PER_STEP;
-  #counts = null;
   #detailsPresenter = null;
   #detailsId = null;
   #isLoading = true;
@@ -50,9 +54,9 @@ export default class MainPresenter {
         return filteredFilms.sort(sortByDate);
       case SortType.RATING:
         return filteredFilms.sort(sortByRating);
+      case SortType.DEFAULT:
+        return filteredFilms.sort(sortById);
     }
-
-    return filteredFilms;
   }
 
   init = () => {
@@ -60,14 +64,25 @@ export default class MainPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
 
     this.#renderMain();
-    this.#renderContent();
+    this.#renderContent({resetSortType: true});
   }
 
   destroy = () => {
     remove(this.#mainComponent);
+    this.#clearContent();
 
     this.#filmsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
+  }
+
+  #renderProfile = () => {
+    const watchedFilmsCount = this.films.filter((film) => film.isWatched).length;
+    this.#profileComponent =  new ProfileView(watchedFilmsCount);
+    render(siteHeaderElement, this.#profileComponent, renderPosition.BEFOREEND);
+  }
+
+  #renderTotal = () => {
+    render(siteFooterStatElement, new TotalView(this.films.length), renderPosition.BEFOREEND);
   }
 
   #renderMain = () => {
@@ -210,6 +225,8 @@ export default class MainPresenter {
         break;
       case UpdateType.MINOR:
         this.#renderContent();
+        remove(this.#profileComponent);
+        this.#renderProfile();
         if (this.#detailsId === data.id) {
           this.#detailsPresenter.init(data);
         }
@@ -224,6 +241,8 @@ export default class MainPresenter {
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#renderContent();
+        this.#renderProfile();
+        this.#renderTotal();
         break;
     }
   }

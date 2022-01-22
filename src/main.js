@@ -1,7 +1,5 @@
-import ProfileView from './view/profile-view.js';
 import MenuView from './view/menu-view.js';
 import StatsView from './view/stats-view.js';
-import TotalView from './view/total-view.js';
 import MainPresenter from './presenter/main-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import FilmsModel from './model/films-model.js';
@@ -12,9 +10,7 @@ import {MenuItem} from './const.js';
 
 const AUTHORIZATION = 'Basic jksdflw574hhssdwriyp';
 const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict/';
-const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
-const siteFooterStatElement = document.querySelector('.footer__statistics');
 const menuComponent = new MenuView();
 const filmsModel = new FilmsModel(new ApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
@@ -39,13 +35,6 @@ const handleMenuClick = (menuItem) => {
   }
 };
 
-const counts = {
-  all: 44, //films.length,
-  history: 3,//films.filter((film) => film.isWatched).length,
-};
-
-render(siteHeaderElement, new ProfileView(counts.history), renderPosition.BEFOREEND);
-
 filterPresenter.init();
 mainPresenter.init();
 
@@ -53,5 +42,3 @@ filmsModel.init().finally(() => {
   render(siteMainElement, menuComponent, renderPosition.AFTERBEGIN);
   menuComponent.setMenuClickHandler(handleMenuClick);
 });
-
-render(siteFooterStatElement, new TotalView(counts.all), renderPosition.BEFOREEND);

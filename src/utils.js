@@ -9,6 +9,7 @@ export const getRandomInteger = (a = 0, b = 1) => {
 
 export const sortByDate = (filmA, filmB) => filmB.releaseDate - filmA.releaseDate;
 export const sortByRating = (filmA, filmB) => filmB.rating - filmA.rating;
+export const sortById = (filmA, filmB) => filmA.id - filmB.id;
 
 export const filter = {
   [FilterType.ALL]: (films) => films,
