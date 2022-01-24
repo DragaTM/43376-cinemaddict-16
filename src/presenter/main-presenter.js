@@ -12,6 +12,7 @@ import TotalView from '../view/total-view.js';
 import {render, renderPosition, remove} from '../render.js';
 import {FILM_COUNT_PER_STEP, SortType, UpdateType, FilterType} from '../const.js';
 import {sortByDate, sortByRating, sortById, filter} from '../utils.js';
+
 const siteHeaderElement = document.querySelector('.header');
 const siteFooterStatElement = document.querySelector('.footer__statistics');
 

@@ -17,7 +17,25 @@ export default class ApiService {
       .then(ApiService.parseResponse);
   }
 
+  getComments = (filmId) => {
+    return this.#load({url: `comments/${filmId}`})
+      .then(ApiService.parseResponse);
+  }
+
   updateFilm = async (film) => {
+    const response = await this.#load({
+      url: `movies/${film.id}`,
+      method: Method.PUT,
+      body: JSON.stringify(this.#adaptToServer(film)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
+  }
+
+  updateComments = async (film) => {
     const response = await this.#load({
       url: `movies/${film.id}`,
       method: Method.PUT,

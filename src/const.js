@@ -17,6 +17,7 @@ export const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  LOAD_COMMENTS: 'LOAD_COMMENTS',
 };
 
 export const FilterType = {

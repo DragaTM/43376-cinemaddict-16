@@ -6,10 +6,10 @@ import {transformArrayToString, transformMinutesToHours} from '../utils.js';
 
 const createCommentTemplate = (comments) => comments.map((comment) => (`<li class="film-details__comment">
       <span class="film-details__comment-emoji">
-        <img src="${comment.emoji}" width="55" height="55" alt="emoji-smile">
+        <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
       </span>
       <div>
-        <p class="film-details__comment-text">${comment.text}</p>
+        <p class="film-details__comment-text">${comment.comment}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${comment.author}</span>
           <span class="film-details__comment-day">${comment.date}</span>
@@ -18,8 +18,8 @@ const createCommentTemplate = (comments) => comments.map((comment) => (`<li clas
       </div>
     </li>`)).join('');
 
-const createDetailsTemplate = (film) => {
-  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, comments, poster, rating, time, releaseDate, isEmotion, activeEmoji, textComment, director, ageRating, country} = film;
+const createDetailsTemplate = (film, comments) => {
+  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, poster, rating, time, releaseDate, isEmotion, activeEmoji, textComment, director, ageRating, country} = film;
   const watchlistActive = inWatchlist ? ' film-details__control-button--active' : '';
   const watchedActive = isWatched ? ' film-details__control-button--active' : '';
   const favoriteActive = isFavorite ? ' film-details__control-button--active' : '';
@@ -143,17 +143,20 @@ const createDetailsTemplate = (film) => {
 
 export default class DetailsView extends SmartView{
   #film = null;
+  #comments = null;
 
-  constructor(film) {
+  constructor(film, comments) {
     super();
     this.#film = film;
     this._data = DetailsView.parseFilmToData(film);
+    this.#comments = comments;
 
     this.#setInnerHandlers();
   }
 
   get template() {
-    return createDetailsTemplate(this._data);
+    console.log(this.#comments);
+    return createDetailsTemplate(this._data, this.#comments);
   }
 
   setWatchlistClickHandler = (callback) => {

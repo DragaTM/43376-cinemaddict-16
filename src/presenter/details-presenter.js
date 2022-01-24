@@ -1,22 +1,38 @@
 import DetailsView from '../view/details-view.js';
 import {render, renderPosition, remove, replace} from '../render.js';
 import {UserAction, UpdateType, isEscKey, isSubmitKeys} from '../const.js';
+import CommentsModel from '../model/comments-model.js';
+import ApiService from '../api-service.js';
 
 const bodyElement = document.querySelector('body');
+const AUTHORIZATION = 'Basic jksdflw574hhssdwriyp';
+const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict/';
 
 export default class DetailsPresenter {
   #changeData = null;
   #filmDetails = null;
   #film = null;
+  #commentsModel = new CommentsModel(new ApiService(END_POINT, AUTHORIZATION));
 
   constructor(changeData) {
     this.#changeData = changeData;
   }
 
+  get comments() {
+    const comments = this.#commentsModel.comments;
+
+    return comments;
+  }
+
   init = (film) => {
     this.#film = film;
+    this.#commentsModel.loadComments(this.#film.id);
+    this.#commentsModel.addObserver(this.#handleModelEvent);
+  }
+
+  #renderDetails = () => {
     const prevFilmDetails = this.#filmDetails;
-    this.#filmDetails = new DetailsView(film);
+    this.#filmDetails = new DetailsView(this.#film, this.comments);
     this.#setAllHandlers();
     bodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this.#onEscKeyDown);
@@ -99,5 +115,13 @@ export default class DetailsPresenter {
       UpdateType.MINOR,
       {...this.#film, isFavorite: !this.#film.isFavorite},
     );
+  }
+
+  #handleModelEvent = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.LOAD_COMMENTS:
+        this.#renderDetails();
+        break;
+    }
   }
 }
