@@ -117,7 +117,7 @@ export default class DetailsPresenter {
     );
   }
 
-  #handleModelEvent = (updateType, data) => {
+  #handleModelEvent = (updateType) => {
     switch (updateType) {
       case UpdateType.LOAD_COMMENTS:
         this.#renderDetails();

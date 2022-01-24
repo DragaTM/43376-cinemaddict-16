@@ -155,7 +155,6 @@ export default class DetailsView extends SmartView{
   }
 
   get template() {
-    console.log(this.#comments);
     return createDetailsTemplate(this._data, this.#comments);
   }
 
