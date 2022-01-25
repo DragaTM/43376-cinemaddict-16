@@ -347,6 +347,7 @@ button {
   margin-right: 10px;
   padding-top: calc(340px + 50px + 10px);
   position: relative;
+  width: 230px;
 }
 
 .film-card--no-controls {
