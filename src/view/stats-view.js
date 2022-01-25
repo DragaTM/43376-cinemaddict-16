@@ -73,7 +73,6 @@ export default class StatsView extends SmartView {
     super.removeElement();
   }
 
-
   restoreHandlers = () => {
     this.#setCharts();
   }
