@@ -2,27 +2,35 @@ import he from 'he';
 import dayjs from 'dayjs';
 import SmartView from './smart-view.js';
 import {isClickOnInput} from '../const.js';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import {transformArrayToString, transformMinutesToHours} from '../utils.js';
+dayjs.extend(relativeTime);
 
 const createCommentTemplate = (comments) => comments.map((comment) => (`<li class="film-details__comment">
       <span class="film-details__comment-emoji">
-        <img src="${comment.emoji}" width="55" height="55" alt="emoji-smile">
+        <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
       </span>
       <div>
-        <p class="film-details__comment-text">${comment.text}</p>
+        <p class="film-details__comment-text">${comment.comment}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${comment.author}</span>
-          <span class="film-details__comment-day">${comment.date}</span>
+          <span class="film-details__comment-day">${dayjs(comment.date).fromNow()}</span>
           <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>
     </li>`)).join('');
 
-const createDetailsTemplate = (film) => {
-  const {name, inWatchlist, isWatched, isFavorite, genre, description, comments, poster, rating, time, year, isEmotion, activeEmoji, textComment} = film;
+const createDetailsTemplate = (film, comments) => {
+  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, poster, rating, time, releaseDate, isEmotion, activeEmoji, textComment, director, ageRating, country} = film;
   const watchlistActive = inWatchlist ? ' film-details__control-button--active' : '';
   const watchedActive = isWatched ? ' film-details__control-button--active' : '';
   const favoriteActive = isFavorite ? ' film-details__control-button--active' : '';
   const commentsTemplate = createCommentTemplate(comments);
+  const date = dayjs(releaseDate).format('D MMMM YYYY');
+  const actorsList = transformArrayToString(actors);
+  const writersList = transformArrayToString(writers);
+  const runTime = transformMinutesToHours(time);
+  const genres = genre.map((genreItem) => `<span class="film-details__genre">${genreItem}</span>`).join('');
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -34,14 +42,14 @@ const createDetailsTemplate = (film) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="${poster}" alt="">
 
-            <p class="film-details__age">18+</p>
+            <p class="film-details__age">${ageRating}+</p>
           </div>
 
           <div class="film-details__info">
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
                 <h3 class="film-details__title">${name}</h3>
-                <p class="film-details__title-original">Original: ${name}</p>
+                <p class="film-details__title-original">Original: ${alternativeName}</p>
               </div>
 
               <div class="film-details__rating">
@@ -52,34 +60,32 @@ const createDetailsTemplate = (film) => {
             <table class="film-details__table">
               <tr class="film-details__row">
                 <td class="film-details__term">Director</td>
-                <td class="film-details__cell">Anthony Mann</td>
+                <td class="film-details__cell">${director}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Writers</td>
-                <td class="film-details__cell">Anne Wigton, Heinz Herald, Richard Weil</td>
+                <td class="film-details__cell">${writersList}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Actors</td>
-                <td class="film-details__cell">Erich von Stroheim, Mary Beth Hughes, Dan Duryea</td>
+                <td class="film-details__cell">${actorsList}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">30 March ${year}</td>
+                <td class="film-details__cell">${date}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${time}</td>
+                <td class="film-details__cell">${runTime}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
-                <td class="film-details__cell">USA</td>
+                <td class="film-details__cell">${country}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Genres</td>
                 <td class="film-details__cell">
-                  <span class="film-details__genre">${genre}</span>
-                  <span class="film-details__genre">${genre}</span>
-                  <span class="film-details__genre">${genre}</span></td>
+                  ${genres}</td>
               </tr>
             </table>
 
@@ -139,17 +145,19 @@ const createDetailsTemplate = (film) => {
 
 export default class DetailsView extends SmartView{
   #film = null;
+  #comments = null;
 
-  constructor(film) {
+  constructor(film, comments) {
     super();
     this.#film = film;
     this._data = DetailsView.parseFilmToData(film);
+    this.#comments = comments;
 
     this.#setInnerHandlers();
   }
 
   get template() {
-    return createDetailsTemplate(this._data);
+    return createDetailsTemplate(this._data, this.#comments);
   }
 
   setWatchlistClickHandler = (callback) => {
@@ -220,12 +228,6 @@ export default class DetailsView extends SmartView{
     this.#update(this._data);
   }
 
-  #scrollPositionHandler = () => {
-    this.updateData({
-      scrollPosition: this.element.scrollTop,
-    }, true);
-  }
-
   restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setWatchlistClickHandler(this._callback.watchlistClick);
@@ -239,7 +241,6 @@ export default class DetailsView extends SmartView{
     this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#emojiClickHandler);
     this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
     this.element.querySelector('.film-details__comments-list').addEventListener('click', this.deleteCommentHandler);
-    this.element.addEventListener('scroll', this.#scrollPositionHandler);
   }
 
   reset = (film) => {
@@ -255,7 +256,6 @@ export default class DetailsView extends SmartView{
   }
 
   static parseFilmToData = (film) => ({...film,
-    scrollPosition: 0,
     isEmotion: false,
     activeEmoji: '',
     textComment: '',
@@ -264,7 +264,6 @@ export default class DetailsView extends SmartView{
   static parseDataToFilm = (data) => {
     const film = {...data};
 
-    delete film.scrollPosition;
     delete film.isEmotion;
     delete film.activeEmoji;
     delete film.textComment;
