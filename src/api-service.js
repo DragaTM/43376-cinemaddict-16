@@ -17,10 +17,8 @@ export default class ApiService {
       .then(ApiService.parseResponse);
   }
 
-  getComments = (filmId) => {
-    return this.#load({url: `comments/${filmId}`})
-      .then(ApiService.parseResponse);
-  }
+  getComments = (filmId) => this.#load({url: `comments/${filmId}`})
+    .then(ApiService.parseResponse);
 
   updateFilm = async (film) => {
     const response = await this.#load({
@@ -71,26 +69,26 @@ export default class ApiService {
 
   #adaptToServer = (film) => {
     const adaptedFilm = {...film,
-      film_info: {
+      'film_info': {
         title: film['name'],
-        alternative_title: film['alternativeName'],
-        age_rating: film['ageRating'],
+        'alternative_title': film['alternativeName'],
+        'age_rating': film['ageRating'],
         description: film['description'],
         director: film['director'],
         poster: film['poster'],
-        total_rating: film['rating'],
+        'total_rating': film['rating'],
         actors: film['actors'],
         genre: film['genre'],
         runtime: film['time'],
         writers: film['writers'],
         release: {
-          release_country: film['country'],
+          'release_country': film['country'],
           date: film['releaseDate'].toISOString(),
         },
       },
-      user_details: {
-        watching_date: film['watchingDate'] !== null ? film['watchingDate'].toISOString() : film['watchingDate'],
-        already_watched: film['isWatched'],
+      'user_details': {
+        'watching_date': film['watchingDate'] !== null ? film['watchingDate'].toISOString() : film['watchingDate'],
+        'already_watched': film['isWatched'],
         favorite: film['isFavorite'],
         watchlist: film['inWatchlist'],
       }

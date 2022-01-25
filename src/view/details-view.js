@@ -2,7 +2,9 @@ import he from 'he';
 import dayjs from 'dayjs';
 import SmartView from './smart-view.js';
 import {isClickOnInput} from '../const.js';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import {transformArrayToString, transformMinutesToHours} from '../utils.js';
+dayjs.extend(relativeTime);
 
 const createCommentTemplate = (comments) => comments.map((comment) => (`<li class="film-details__comment">
       <span class="film-details__comment-emoji">
@@ -12,7 +14,7 @@ const createCommentTemplate = (comments) => comments.map((comment) => (`<li clas
         <p class="film-details__comment-text">${comment.comment}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${comment.author}</span>
-          <span class="film-details__comment-day">${comment.date}</span>
+          <span class="film-details__comment-day">${dayjs(comment.date).fromNow()}</span>
           <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>
@@ -226,12 +228,6 @@ export default class DetailsView extends SmartView{
     this.#update(this._data);
   }
 
-  #scrollPositionHandler = () => {
-    this.updateData({
-      scrollPosition: this.element.scrollTop,
-    }, true);
-  }
-
   restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setWatchlistClickHandler(this._callback.watchlistClick);
@@ -245,7 +241,6 @@ export default class DetailsView extends SmartView{
     this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#emojiClickHandler);
     this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
     this.element.querySelector('.film-details__comments-list').addEventListener('click', this.deleteCommentHandler);
-    this.element.addEventListener('scroll', this.#scrollPositionHandler);
   }
 
   reset = (film) => {
@@ -261,7 +256,6 @@ export default class DetailsView extends SmartView{
   }
 
   static parseFilmToData = (film) => ({...film,
-    scrollPosition: 0,
     isEmotion: false,
     activeEmoji: '',
     textComment: '',
@@ -270,7 +264,6 @@ export default class DetailsView extends SmartView{
   static parseDataToFilm = (data) => {
     const film = {...data};
 
-    delete film.scrollPosition;
     delete film.isEmotion;
     delete film.activeEmoji;
     delete film.textComment;

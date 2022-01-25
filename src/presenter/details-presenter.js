@@ -44,7 +44,9 @@ export default class DetailsPresenter {
     }
 
     if (bodyElement.contains(prevFilmDetails.element)) {
+      const scrollPosition = prevFilmDetails.element.scrollTop;
       replace(this.#filmDetails, prevFilmDetails);
+      this.#filmDetails.element.scrollTop = scrollPosition;
     }
 
     remove(prevFilmDetails);

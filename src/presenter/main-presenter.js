@@ -55,7 +55,7 @@ export default class MainPresenter {
         return filteredFilms.sort(sortByDate);
       case SortType.RATING:
         return filteredFilms.sort(sortByRating);
-      case SortType.DEFAULT:
+      default:
         return filteredFilms.sort(sortById);
     }
   }
