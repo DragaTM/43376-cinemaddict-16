@@ -1,10 +1,8 @@
 import AbstractView from './abstract-view.js';
+import {calculationRank} from '../utils.js';
 
 const createProfileTemplate = (history) => {
-  let rank = '';
-  if (history > 0) {rank = 'Novice';}
-  if (history > 10) {rank = 'Fun';}
-  if (history > 20) {rank = 'Movie buff';}
+  const rank = calculationRank(history);
 
   return `<section class="header__profile profile">
     <p class="profile__rating">${rank}</p>
