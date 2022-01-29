@@ -25,6 +25,9 @@ const createDetailsTemplate = (film, comments) => {
   const watchlistActive = inWatchlist ? ' film-details__control-button--active' : '';
   const watchedActive = isWatched ? ' film-details__control-button--active' : '';
   const favoriteActive = isFavorite ? ' film-details__control-button--active' : '';
+  const watchlistText = inWatchlist ? 'Already in watchlist' : 'Add to watchlist';
+  const watchedText = isWatched ? 'Already watched' : 'Add to watched';
+  const favoriteText = isFavorite ? 'Already favorite' : 'Add to favorites';
   const commentsTemplate = createCommentTemplate(comments);
   const date = dayjs(releaseDate).format('D MMMM YYYY');
   const actorsList = transformArrayToString(actors);
@@ -96,9 +99,9 @@ const createDetailsTemplate = (film, comments) => {
         </div>
 
         <section class="film-details__controls">
-          <button type="button" class="film-details__control-button film-details__control-button--watchlist${watchlistActive}" id="watchlist" name="watchlist">Add to watchlist</button>
-          <button type="button" class="film-details__control-button film-details__control-button--watched${watchedActive}" id="watched" name="watched">Already watched</button>
-          <button type="button" class="film-details__control-button film-details__control-button--favorite${favoriteActive}" id="favorite" name="favorite">Add to favorites</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watchlist${watchlistActive}" id="watchlist" name="watchlist">${watchlistText}</button>
+          <button type="button" class="film-details__control-button film-details__control-button--watched${watchedActive}" id="watched" name="watched">${watchedText}</button>
+          <button type="button" class="film-details__control-button film-details__control-button--favorite${favoriteActive}" id="favorite" name="favorite">${favoriteText}</button>
         </section>
       </div>
 
@@ -211,8 +214,10 @@ export default class DetailsView extends SmartView{
     }
     evt.preventDefault();
     const numberOfComment = Array.from(this.element.getElementsByClassName('film-details__comment-delete')).indexOf(evt.target);
-    this.#update(this._data.comments.splice(numberOfComment, 1));
+    this.deletingCommentId = this._data.comments[numberOfComment];
   }
+
+  getFilm = () => (this.#film)
 
   addComment = () => {
     if (this._data.activeEmoji === '' || this._data.text === '') {

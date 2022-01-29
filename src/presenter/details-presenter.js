@@ -1,21 +1,18 @@
 import DetailsView from '../view/details-view.js';
 import {render, renderPosition, remove, replace} from '../render.js';
 import {UserAction, UpdateType, isEscKey, isSubmitKeys} from '../const.js';
-import CommentsModel from '../model/comments-model.js';
-import ApiService from '../api-service.js';
 
 const bodyElement = document.querySelector('body');
-const AUTHORIZATION = 'Basic jksdflw574hhssdwriyp';
-const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict/';
 
 export default class DetailsPresenter {
   #changeData = null;
   #filmDetails = null;
   #film = null;
-  #commentsModel = new CommentsModel(new ApiService(END_POINT, AUTHORIZATION));
+  #commentsModel = null;
 
-  constructor(changeData) {
+  constructor(changeData, commentsModel) {
     this.#changeData = changeData;
+    this.#commentsModel = commentsModel;
   }
 
   get comments() {
@@ -76,17 +73,19 @@ export default class DetailsPresenter {
   };
 
   #handleDeleteComment = () => {
+    if (this.#filmDetails.deletingCommentId === undefined) {
+      return;
+    }
     this.#changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
-      this.#film,
+      [this.#filmDetails.deletingCommentId, this.#filmDetails.getFilm()],
     );
   }
 
   #handleAddComment = (e) => {
     if (isSubmitKeys(e)) {
       e.preventDefault();
-      this.#filmDetails.addComment();
       this.#changeData(
         UserAction.ADD_COMMENT,
         UpdateType.PATCH,

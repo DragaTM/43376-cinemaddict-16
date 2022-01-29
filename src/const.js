@@ -1,4 +1,8 @@
 export const FILM_COUNT_PER_STEP = 5;
+export const FOR_ALL_TIME = 'all';
+export const MINUTES_IN_HOUR = 60;
+export const AUTHORIZATION = 'Basic jksdflw574hhssdwriyp';
+export const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict';
 
 export const SortType = {
   DEFAULT: 'default',

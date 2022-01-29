@@ -40,12 +40,10 @@ export const transformMinutesToHours = (time) => {
   return fullTime;
 };
 
-export const calculationRank = (film) => {
-  let rank = '';
-  if (film > 0) {rank = 'Novice';}
-  if (film > 10) {rank = 'Fun';}
-  if (film > 20) {rank = 'Movie buff';}
-  return rank;
+export const getRank = (filmsCount) => {
+  if (filmsCount <= 10) {return 'Novice';}
+  if (filmsCount <= 20) {return 'Fun';}
+  if (filmsCount > 20) {return 'Movie buff';}
 };
 
 export const getGenresInfo = (films) => {

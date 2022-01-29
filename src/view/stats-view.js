@@ -1,6 +1,6 @@
 import SmartView from './smart-view.js';
-import {calculationRank, getGenresInfo} from '../utils.js';
-import {isClickOnInput} from '../const.js';
+import {getRank, getGenresInfo} from '../utils.js';
+import {isClickOnInput, FOR_ALL_TIME, MINUTES_IN_HOUR} from '../const.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import dayjs from 'dayjs';
@@ -57,7 +57,7 @@ const createStatsTemplate = (currentPeriod, rank, filmsPerPeriod, duration, topG
 export default class StatsView extends SmartView {
   #films = [];
   #rank = '';
-  #currentPeriod = 'all';
+  #currentPeriod = FOR_ALL_TIME;
   #filmsPerPeriodCount = 0;
   #duration = 0;
   #genresList = null;
@@ -69,7 +69,7 @@ export default class StatsView extends SmartView {
 
     this.#films = films;
     const watchedCount = this.#films.filter((film) => film.isWatched).length;
-    this.#rank = calculationRank(watchedCount);
+    this.#rank = getRank(watchedCount);
     this.createStats();
     this.restoreHandlers();
     this.#setCharts();
@@ -87,20 +87,15 @@ export default class StatsView extends SmartView {
     const filterFilmsByPeriod = (films, period) => films.filter(({watchingDate}) => dayjs(watchingDate).isBetween(dayjs().subtract(1, period), dayjs()));
     let filmsPerPeriod = filterFilmsByPeriod(this.#films, this.#currentPeriod);
 
-    if (this.#currentPeriod === 'all') {
+    if (this.#currentPeriod === FOR_ALL_TIME) {
       filmsPerPeriod = this.#films;
     }
 
     this.#filmsPerPeriodCount = filmsPerPeriod.length;
 
-    let totalTime = 0;
-
-    filmsPerPeriod.forEach((film) => {
-      totalTime += film.time;
-    });
-
-    const timeHours = Math.trunc(totalTime / 60);
-    const timeMinutes = totalTime % 60;
+    const totalTime = filmsPerPeriod.reduce(((prevTime, {time}) => prevTime + time), 0);
+    const timeHours = Math.trunc(totalTime / MINUTES_IN_HOUR);
+    const timeMinutes = totalTime % MINUTES_IN_HOUR;
 
     if (timeHours > 0) {
       this.#duration = `${timeHours} <span class="statistic__item-description">h</span> ${timeMinutes} <span class="statistic__item-description">m</span>`;
