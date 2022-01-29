@@ -32,10 +32,33 @@ export const transformMinutesToHours = (time) => {
   let fullTime = '';
 
   if (timeHours > 0) {
-    fullTime = `${timeHours}h ${timeMinutes} m`;
+    fullTime = `${timeHours}h ${timeMinutes}m`;
   } else {
     fullTime = `${timeMinutes}m`;
   }
 
   return fullTime;
+};
+
+export const getRank = (filmsCount) => {
+  if (filmsCount <= 10) {return 'Novice';}
+  if (filmsCount <= 20) {return 'Fun';}
+  if (filmsCount > 20) {return 'Movie buff';}
+};
+
+export const getGenresInfo = (films) => {
+  const stats = {};
+
+  for (const film of films) {
+    for (const genreItem of film.genre) {
+      if (stats[genreItem]) {
+        stats[genreItem] += 1;
+        continue;
+      }
+
+      stats[genreItem] = 1;
+    }
+  }
+
+  return stats;
 };

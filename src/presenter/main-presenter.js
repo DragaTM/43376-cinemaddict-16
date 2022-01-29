@@ -10,7 +10,7 @@ import FilmPresenter from './film-presenter.js';
 import DetailsPresenter from './details-presenter.js';
 import TotalView from '../view/total-view.js';
 import {render, renderPosition, remove} from '../render.js';
-import {FILM_COUNT_PER_STEP, SortType, UpdateType, FilterType} from '../const.js';
+import {FILM_COUNT_PER_STEP, SortType, UpdateType, FilterType, UserAction} from '../const.js';
 import {sortByDate, sortByRating, sortById, filter} from '../utils.js';
 
 const siteHeaderElement = document.querySelector('.header');
@@ -19,6 +19,7 @@ const siteFooterStatElement = document.querySelector('.footer__statistics');
 export default class MainPresenter {
   #filmsModel = null;
   #filterModel = null;
+  #commentsModel = null;
   #emptyComponent = null;
   #sortComponent = null;
   #profileComponent = null;
@@ -39,10 +40,11 @@ export default class MainPresenter {
   #detailsId = null;
   #isLoading = true;
 
-  constructor(siteMainElement, filmsModel, filterModel) {
+  constructor(siteMainElement, filmsModel, filterModel, commentsModel) {
     this.#siteMainElement = siteMainElement;
     this.#filmsModel = filmsModel;
     this.#filterModel = filterModel;
+    this.#commentsModel = commentsModel;
   }
 
   get films() {
@@ -63,6 +65,7 @@ export default class MainPresenter {
   init = () => {
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#commentsModel.addObserver(this.#handleModelEvent);
 
     this.#renderMain();
     this.#renderContent({resetSortType: true});
@@ -166,7 +169,7 @@ export default class MainPresenter {
 
   #openDetails = (film) => {
     this.#closeDetails();
-    this.#detailsPresenter = new DetailsPresenter(this.#handleViewAction);
+    this.#detailsPresenter = new DetailsPresenter(this.#handleViewAction, this.#commentsModel);
     this.#detailsPresenter.init(film);
     this.#detailsId = film.id;
   }
@@ -215,7 +218,17 @@ export default class MainPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
-    this.#filmsModel.updateFilm(updateType, update);
+    switch (actionType) {
+      case UserAction.UPDATE_FILM:
+        this.#filmsModel.updateFilm(updateType, update);
+        break;
+      case UserAction.ADD_COMMENT:
+        this.#commentsModel.addComment(updateType, update);
+        break;
+      case UserAction.DELETE_COMMENT:
+        this.#commentsModel.deleteComment(updateType, update);
+        break;
+    }
   }
 
   #handleModelEvent = (updateType, data) => {
