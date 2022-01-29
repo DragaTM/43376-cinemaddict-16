@@ -33,6 +33,7 @@ export default class FilmPresenter {
       replace(this.#filmCard, prevFilmCard);
     }
     remove(prevFilmCard);
+    
   }
 
   #setAllHandlers = () => {
