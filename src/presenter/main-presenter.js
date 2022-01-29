@@ -234,7 +234,7 @@ export default class MainPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#filmPresenter.get(data.id).init(data);
+        this.#filmPresenter.get(data.id).init(data, this.#openDetails);
         this.#detailsPresenter.init(data);
         break;
       case UpdateType.MINOR:

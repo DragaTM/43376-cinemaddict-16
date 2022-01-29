@@ -23,15 +23,13 @@ export default class FilmPresenter {
 
     if (prevFilmCard === null) {
       render(this.#siteListElement, this.#filmCard, renderPosition.BEFOREEND);
-      this.#filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
-        this.#openDetails(film);
-      });
       return;
     }
 
     if (this.#siteListElement.contains(prevFilmCard.element)) {
       replace(this.#filmCard, prevFilmCard);
     }
+
     remove(prevFilmCard);
   }
 
@@ -39,10 +37,15 @@ export default class FilmPresenter {
     this.#filmCard.setWatchlistClickHandler(this.#handleWatchlistClick);
     this.#filmCard.setWatchedClickHandler(this.#handleWatchedClick);
     this.#filmCard.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#filmCard.setOpenDetailsHandler(this.#handleOpenDetails);
   }
 
   destroy = () => {
     remove(this.#filmCard);
+  }
+
+  #handleOpenDetails = () => {
+    this.#openDetails(this.#film);
   }
 
   #handleWatchlistClick = () => {
