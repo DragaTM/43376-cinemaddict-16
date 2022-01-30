@@ -62,6 +62,11 @@ export default class MainPresenter {
     }
   }
 
+  getNofilteredFilms = () => {
+    const films = this.#filmsModel.films;
+    return films;
+  }
+
   init = () => {
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -77,6 +82,7 @@ export default class MainPresenter {
 
     this.#filmsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
+    this.#commentsModel.removeObserver(this.#handleModelEvent);
   }
 
   #renderProfile = () => {
