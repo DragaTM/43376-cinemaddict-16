@@ -11,7 +11,7 @@ import DetailsPresenter from './details-presenter.js';
 import TotalView from '../view/total-view.js';
 import {render, renderPosition, remove} from '../render.js';
 import {FILM_COUNT_PER_STEP, SortType, UpdateType, FilterType, UserAction} from '../const.js';
-import {sortByDate, sortByRating, sortById, filter} from '../utils.js';
+import {sortByDate, sortByRating, sortById, sortByCommented, filter} from '../utils.js';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteFooterStatElement = document.querySelector('.footer__statistics');
@@ -182,11 +182,37 @@ export default class MainPresenter {
   }
 
   #renderRated = () => {
+    const ratingFilms = this.films.filter((film) => film.rating > 0);
+
+    if (ratingFilms.length === 0) {
+      return;
+    }
+
+    const sortedRatingFilms = ratingFilms.sort(sortByRating).slice(0, 2);
+    const ratedFilmsList = this.#ratedComponent.element.querySelector('.films-list__container');
+
     render(this.#mainElement, this.#ratedComponent, renderPosition.BEFOREEND);
+    
+    sortedRatingFilms.forEach((film) => {
+      this.#renderFilm(ratedFilmsList, film);
+    });
   }
 
   #renderCommented = () => {
+    const commentedFilms = this.films.filter((film) => film.comments.length > 0);
+    
+    if (commentedFilms.length === 0) {
+      return;
+    }
+
+    const sortedCommentedFilms = commentedFilms.sort(sortByCommented).slice(0, 2);
+    const commentedFilmsList = this.#commentedComponent.element.querySelector('.films-list__container');
+
     render(this.#mainElement, this.#commentedComponent, renderPosition.BEFOREEND);
+
+    sortedCommentedFilms.forEach((film) => {
+      this.#renderFilm(commentedFilmsList, film);
+    });
   }
 
   #renderShowMoreBtn = () => {
@@ -236,6 +262,8 @@ export default class MainPresenter {
       case UpdateType.PATCH:
         this.#filmPresenter.get(data.id).init(data);
         this.#detailsPresenter.init(data);
+        remove(this.#commentedComponent);
+        this.#renderCommented();
         break;
       case UpdateType.MINOR:
         this.#renderContent();

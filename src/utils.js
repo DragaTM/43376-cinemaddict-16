@@ -12,6 +12,7 @@ export const getRandomInteger = (a = 0, b = 1) => {
 
 export const sortByDate = (filmA, filmB) => filmB.releaseDate - filmA.releaseDate;
 export const sortByRating = (filmA, filmB) => filmB.rating - filmA.rating;
+export const sortByCommented = (filmA, filmB) => filmB.comments.length - filmA.comments.length;
 export const sortById = (filmA, filmB) => filmA.id - filmB.id;
 
 export const filter = {

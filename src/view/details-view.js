@@ -230,7 +230,7 @@ export default class DetailsView extends SmartView{
       author: 'Author',
     };
     this._data.comments.push(newComment);
-    this.#update(this._data);
+    console.log(this._data.comments);
   }
 
   restoreHandlers = () => {

@@ -32,8 +32,8 @@ export default class FilmPresenter {
     if (this.#siteListElement.contains(prevFilmCard.element)) {
       replace(this.#filmCard, prevFilmCard);
     }
+
     remove(prevFilmCard);
-    
   }
 
   #setAllHandlers = () => {

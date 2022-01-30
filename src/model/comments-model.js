@@ -32,6 +32,21 @@ export default class CommentsModel extends AbstractObsevable {
     return adaptedComment;
   }
 
+  addComment = async (updateType, data) => {
+    const filmId = data[0];
+    const comments = data[1];
+
+    try {
+      await this.#apiService.addComment(comments);
+
+      
+      this._notify(updateType, film);
+
+    } catch (err) {
+      this._notify(UpdateType.ERROR_ADD_COMMENT, err);
+    }
+  }
+
   deleteComment = async (updateType, data) => {
     const commentId = data[0];
     const film = data[1];
