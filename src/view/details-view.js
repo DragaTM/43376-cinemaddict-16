@@ -21,7 +21,7 @@ const createCommentTemplate = (comments) => comments.map((comment) => (`<li clas
     </li>`)).join('');
 
 const createDetailsTemplate = (film, comments) => {
-  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, poster, rating, time, releaseDate, isEmotion, activeEmoji, textComment, director, ageRating, country} = film;
+  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, poster, rating, time, releaseDate, isEmotion, emoji, textComment, director, ageRating, country} = film;
   const watchlistActive = inWatchlist ? ' film-details__control-button--active' : '';
   const watchedActive = isWatched ? ' film-details__control-button--active' : '';
   const favoriteActive = isFavorite ? ' film-details__control-button--active' : '';
@@ -112,7 +112,7 @@ const createDetailsTemplate = (film, comments) => {
           <ul class="film-details__comments-list">${commentsTemplate}</ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label">${isEmotion ? `<img src="images/emoji/${activeEmoji}.png" width="55" height="55" alt="emoji-${activeEmoji}">` : ''}</div>
+            <div class="film-details__add-emoji-label">${isEmotion ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : ''}</div>
 
             <label class="film-details__comment-label">
               <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(textComment)}</textarea>
@@ -204,7 +204,7 @@ export default class DetailsView extends SmartView{
     }
     this.updateData({
       isEmotion: true,
-      activeEmoji: evt.target.id,
+      emoji: evt.target.id,
     });
   }
 
@@ -217,20 +217,17 @@ export default class DetailsView extends SmartView{
     this.deletingCommentId = this._data.comments[numberOfComment];
   }
 
-  getFilm = () => (this.#film)
-
-  addComment = () => {
+  getNewComment = () => {
     if (this._data.activeEmoji === '' || this._data.text === '') {
       return;
     }
+
     const newComment = {
-      emoji: `./images/emoji/${this._data.activeEmoji}.png`,
+      emoji: this._data.emoji,
       text: this._data.textComment,
-      date: dayjs(),
-      author: 'Author',
     };
-    this._data.comments.push(newComment);
-    console.log(this._data.comments);
+
+    return newComment;
   }
 
   restoreHandlers = () => {
@@ -262,7 +259,6 @@ export default class DetailsView extends SmartView{
 
   static parseFilmToData = (film) => ({...film,
     isEmotion: false,
-    activeEmoji: '',
     textComment: '',
   })
 
@@ -270,7 +266,6 @@ export default class DetailsView extends SmartView{
     const film = {...data};
 
     delete film.isEmotion;
-    delete film.activeEmoji;
     delete film.textComment;
 
     return film;

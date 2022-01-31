@@ -76,20 +76,25 @@ export default class DetailsPresenter {
     if (this.#filmDetails.deletingCommentId === undefined) {
       return;
     }
+
     this.#changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
-      [this.#filmDetails.deletingCommentId, this.#filmDetails.getFilm()],
+      [this.#filmDetails.deletingCommentId, this.#film],
     );
   }
 
   #handleAddComment = (e) => {
     if (isSubmitKeys(e)) {
       e.preventDefault();
+
+      const film = this.#film;
+      const newComment = this.#filmDetails.getNewComment();
+
       this.#changeData(
         UserAction.ADD_COMMENT,
         UpdateType.PATCH,
-        this.#film,
+        [film, newComment],
       );
     }
   }
@@ -103,6 +108,12 @@ export default class DetailsPresenter {
   }
 
   #handleWatchedClick = () => {
+    if (this.#film.isWatched) {
+      this.#film.watchingDate = null;
+    } else {
+      this.#film.watchingDate = new Date();
+    }
+
     this.#changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,

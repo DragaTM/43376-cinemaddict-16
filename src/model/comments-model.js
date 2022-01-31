@@ -1,5 +1,6 @@
 import AbstractObsevable from '../abstract-observable.js';
 import {UpdateType} from '../const.js';
+import {adaptToClient} from '../utils.js';
 
 export default class CommentsModel extends AbstractObsevable {
   #apiService = null;
@@ -33,14 +34,14 @@ export default class CommentsModel extends AbstractObsevable {
   }
 
   addComment = async (updateType, data) => {
-    const filmId = data[0];
-    const comments = data[1];
+    const film = data[0];
+    const comment = data[1];
 
     try {
-      await this.#apiService.addComment(comments);
+      const response = await this.#apiService.addComment(film.id, comment);
+      const adaptedFilm = adaptToClient(response.movie);
 
-      
-      this._notify(updateType, film);
+      this._notify(updateType, adaptedFilm);
 
     } catch (err) {
       this._notify(UpdateType.ERROR_ADD_COMMENT, err);
