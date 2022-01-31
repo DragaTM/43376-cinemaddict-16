@@ -29,6 +29,10 @@ export default class FilmPresenter {
       return;
     }
 
+    this.#filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
+      this.#openDetails(film);
+    });
+
     if (this.#siteListElement.contains(prevFilmCard.element)) {
       replace(this.#filmCard, prevFilmCard);
     }

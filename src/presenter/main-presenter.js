@@ -1,7 +1,6 @@
 import ProfileView from '../view/profile-view.js';
 import SortView from '../view/sort-view.js';
 import MainView from '../view/main-view.js';
-import FilmsListView from '../view/films-list-view.js';
 import EmptyView from '../view/empty-view.js';
 import ShowMoreBtnView from '../view/show-more-btn-view.js';
 import RatedView from '../view/rated-view.js';
@@ -26,7 +25,6 @@ export default class MainPresenter {
   #profileComponent = null;
   #loadingComponent = new LoadingView();
   #mainComponent = new MainView();
-  #filmsListComponent = new FilmsListView();
   #showMoreBtnComponent = new ShowMoreBtnView();
   #ratedComponent = new RatedView();
   #commentedComponent = new CommentedView();
@@ -126,28 +124,33 @@ export default class MainPresenter {
       this.#renderFilmList();
     }
 
-    this.#renderRated();
-    this.#renderCommented();
+    //this.#renderRated();
+    //this.#renderCommented();
   }
 
   #renderFilmList = () => {
-    render(this.#statusMessage, this.#filmsListComponent, renderPosition.BEFOREEND);
-
     const filmCount = this.films.length;
     const films = this.films.slice(0, Math.min(filmCount, FILM_COUNT_PER_STEP));
 
     films.forEach((film) => {
-      this.#renderFilm(this.#filmsListComponent, film);
+      this.#renderFilm(this.#filmListElement, film);
     });
 
     if (filmCount > FILM_COUNT_PER_STEP) {
-      this.#renderShowMoreBtn(this.#filmsListComponent);
+      this.#renderShowMoreBtn(this.#filmListElement);
     }
+  }
+
+  #clearFilmList = () => {
+    this.#filmPresenter.forEach((presenter) => presenter.destroy());
+    this.#filmPresenter.clear();
+    this.#renderedFilmCount = FILM_COUNT_PER_STEP;
+    remove(this.#showMoreBtnComponent);
   }
 
   #clearContent = (resetSortType = false) => {
     remove(this.#sortComponent);
-    remove(this.#filmsListComponent);
+    this.#clearFilmList();
     remove(this.#emptyComponent);
     remove(this.#ratedComponent);
     remove(this.#commentedComponent);
@@ -176,7 +179,7 @@ export default class MainPresenter {
 
   #renderFilm = (filmListElement, film) => {
     const filmPresenter = new FilmPresenter(filmListElement, this.#handleViewAction, this.#openDetails);
-    filmPresenter.init(film);
+    filmPresenter.init(film, this.#openDetails);
     this.#filmPresenter.set(film.id, filmPresenter);
   }
 
@@ -229,7 +232,7 @@ export default class MainPresenter {
   }
 
   #renderShowMoreBtn = () => {
-    render(this.#filmsListComponent, this.#showMoreBtnComponent, renderPosition.AFTEREND);
+    render(this.#filmListElement, this.#showMoreBtnComponent, renderPosition.AFTEREND);
 
     this.#showMoreBtnComponent.setClickHandler(this.#handleShowMoreBtnClick);
   }
@@ -240,7 +243,7 @@ export default class MainPresenter {
     const films = this.films.slice(this.#renderedFilmCount, newRenderedFilmCount);
 
     films.forEach((film) => {
-      this.#renderFilm(this.#filmsListComponent, film);
+      this.#renderFilm(this.#filmListElement, film);
     });
     this.#renderedFilmCount += FILM_COUNT_PER_STEP;
 
@@ -268,8 +271,8 @@ export default class MainPresenter {
       case UpdateType.PATCH:
         this.#filmPresenter.get(data.id).init(data);
         this.#detailsPresenter.init(data);
-        remove(this.#commentedComponent);
-        this.#renderCommented();
+        //remove(this.#commentedComponent);
+        //this.#renderCommented();
         break;
       case UpdateType.MINOR:
         this.#renderContent();
