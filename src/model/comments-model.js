@@ -44,7 +44,7 @@ export default class CommentsModel extends AbstractObsevable {
       this._notify(updateType, adaptedFilm);
 
     } catch (err) {
-      this._notify(UpdateType.ERROR_ADD_COMMENT, err);
+      this._notify(UpdateType.ERROR_ADD_COMMENT);
     }
   }
 
@@ -65,7 +65,7 @@ export default class CommentsModel extends AbstractObsevable {
       this._notify(updateType, film);
 
     } catch (err) {
-      this._notify(UpdateType.ERROR_DELETE_COMMENT, commentId);
+      this._notify(UpdateType.ERROR_DELETE_COMMENT);
     }
   }
 }

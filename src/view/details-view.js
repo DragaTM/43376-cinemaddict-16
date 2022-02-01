@@ -6,6 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import {transformArrayToString, transformMinutesToHours} from '../utils.js';
 dayjs.extend(relativeTime);
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
 const createCommentTemplate = (comments, isDeleting, isDisabled) => comments.map((comment) => (`<li class="film-details__comment">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
@@ -149,6 +150,7 @@ const createDetailsTemplate = (film, comments) => {
 export default class DetailsView extends SmartView{
   #film = null;
   #comments = null;
+  #deletingComment = null;
 
   constructor(film, comments) {
     super();
@@ -214,14 +216,11 @@ export default class DetailsView extends SmartView{
     }
     evt.preventDefault();
     const numberOfComment = Array.from(this.element.getElementsByClassName('film-details__comment-delete')).indexOf(evt.target);
+    this.#deletingComment = evt.target.closest('.film-details__comment');
     this.deletingCommentId = this._data.comments[numberOfComment];
   }
 
   getNewComment = () => {
-    if (this._data.activeEmoji === '' || this._data.text === '') {
-      return;
-    }
-
     const newComment = {
       emoji: this._data.emoji,
       text: this._data.textComment,
@@ -273,5 +272,23 @@ export default class DetailsView extends SmartView{
     delete film.isDeleting;
 
     return film;
+  }
+
+  shakeComment(callback) {
+    const shakedElement = this.#deletingComment;
+    shakedElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      shakedElement.style.animation = '';
+      callback();
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  shakeForm(callback) {
+    const shakedElement = this.element.querySelector('.film-details__new-comment');
+    shakedElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      shakedElement.style.animation = '';
+      callback();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }

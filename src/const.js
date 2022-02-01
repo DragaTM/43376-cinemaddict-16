@@ -22,6 +22,8 @@ export const UpdateType = {
   MAJOR: 'MAJOR',
   INIT: 'INIT',
   LOAD_COMMENTS: 'LOAD_COMMENTS',
+  ERROR_ADD_COMMENT: 'ERROR_ADD_COMMENT',
+  ERROR_DELETE_COMMENT: 'ERROR_DELETE_COMMENT',
 };
 
 export const FilterType = {

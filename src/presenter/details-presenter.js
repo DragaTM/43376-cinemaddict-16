@@ -149,4 +149,25 @@ export default class DetailsPresenter {
       isDeleting: true,
     })
   }
+
+  setAbortingAddComment = () => {
+    const resetDetails = () => {
+      this.#filmDetails.updateData({
+        isDisabled: false,
+      });
+    }
+    
+    this.#filmDetails.shakeForm(resetDetails);
+  }
+
+  setAbortingDeleteComment = () => {
+    const resetDetails = () => {
+      this.#filmDetails.updateData({
+        isDisabled: false,
+        isDeleting: false,
+      });
+    }
+    console.log('2');
+    this.#filmDetails.shakeComment(resetDetails);
+  }
 }

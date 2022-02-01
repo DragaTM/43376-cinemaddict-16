@@ -297,6 +297,12 @@ export default class MainPresenter {
         this.#renderProfile();
         this.#renderTotal();
         break;
+      case UpdateType.ERROR_DELETE_COMMENT:
+        this.#detailsPresenter.setAbortingDeleteComment();
+        break;
+      case UpdateType.ERROR_ADD_COMMENT:
+        this.#detailsPresenter.setAbortingAddComment();
+        break;
     }
   }
 
