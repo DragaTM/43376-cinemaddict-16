@@ -73,23 +73,24 @@ export default class DetailsPresenter {
   };
 
   #handleDeleteComment = () => {
-    if (this.#filmDetails.deletingCommentId === undefined) {
-      return;
-    }
     this.#changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
-      [this.#filmDetails.deletingCommentId, this.#filmDetails.getFilm()],
+      [this.#filmDetails.deletingCommentId, this.#film],
     );
   }
 
   #handleAddComment = (e) => {
     if (isSubmitKeys(e)) {
       e.preventDefault();
+
+      const film = this.#film;
+      const newComment = this.#filmDetails.getNewComment();
+
       this.#changeData(
         UserAction.ADD_COMMENT,
         UpdateType.PATCH,
-        this.#film,
+        [film, newComment],
       );
     }
   }
@@ -103,6 +104,12 @@ export default class DetailsPresenter {
   }
 
   #handleWatchedClick = () => {
+    if (this.#film.isWatched) {
+      this.#film.watchingDate = null;
+    } else {
+      this.#film.watchingDate = new Date();
+    }
+
     this.#changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
@@ -124,5 +131,39 @@ export default class DetailsPresenter {
         this.#renderDetails();
         break;
     }
+  }
+
+  setAddingComment = () => {
+    this.#filmDetails.updateData({
+      isDisabled: true,
+    });
+  }
+
+  setDeletingComment = () => {
+    this.#filmDetails.updateData({
+      isDisabled: true,
+      isDeleting: true,
+    });
+  }
+
+  setAbortingAddComment = () => {
+    const resetDetails = () => {
+      this.#filmDetails.updateData({
+        isDisabled: false,
+      });
+    };
+
+    this.#filmDetails.shakeForm(resetDetails);
+  }
+
+  setAbortingDeleteComment = () => {
+    const resetDetails = () => {
+      this.#filmDetails.updateData({
+        isDisabled: false,
+        deletingCommentId: null,
+      });
+    };
+
+    this.#filmDetails.shakeComment(resetDetails);
   }
 }

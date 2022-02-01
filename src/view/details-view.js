@@ -6,7 +6,8 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import {transformArrayToString, transformMinutesToHours} from '../utils.js';
 dayjs.extend(relativeTime);
 
-const createCommentTemplate = (comments) => comments.map((comment) => (`<li class="film-details__comment">
+const SHAKE_ANIMATION_TIMEOUT = 600;
+const createCommentTemplate = (comments, isDisabled, deletingCommentId) => comments.map((comment) => (`<li class="film-details__comment">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
       </span>
@@ -15,20 +16,20 @@ const createCommentTemplate = (comments) => comments.map((comment) => (`<li clas
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${comment.author}</span>
           <span class="film-details__comment-day">${dayjs(comment.date).fromNow()}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <button class="film-details__comment-delete" ${isDisabled ? 'disabled' : ''}>${deletingCommentId === comment.id ? 'Deleting...' : 'Delete'}</button>
         </p>
       </div>
     </li>`)).join('');
 
 const createDetailsTemplate = (film, comments) => {
-  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, poster, rating, time, releaseDate, isEmotion, activeEmoji, textComment, director, ageRating, country} = film;
+  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, poster, rating, time, releaseDate, isEmotion, emoji, textComment, director, ageRating, country, isDisabled, deletingCommentId} = film;
   const watchlistActive = inWatchlist ? ' film-details__control-button--active' : '';
   const watchedActive = isWatched ? ' film-details__control-button--active' : '';
   const favoriteActive = isFavorite ? ' film-details__control-button--active' : '';
   const watchlistText = inWatchlist ? 'Already in watchlist' : 'Add to watchlist';
   const watchedText = isWatched ? 'Already watched' : 'Add to watched';
   const favoriteText = isFavorite ? 'Already favorite' : 'Add to favorites';
-  const commentsTemplate = createCommentTemplate(comments);
+  const commentsTemplate = createCommentTemplate(comments, isDisabled, deletingCommentId);
   const date = dayjs(releaseDate).format('D MMMM YYYY');
   const actorsList = transformArrayToString(actors);
   const writersList = transformArrayToString(writers);
@@ -112,29 +113,29 @@ const createDetailsTemplate = (film, comments) => {
           <ul class="film-details__comments-list">${commentsTemplate}</ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label">${isEmotion ? `<img src="images/emoji/${activeEmoji}.png" width="55" height="55" alt="emoji-${activeEmoji}">` : ''}</div>
+            <div class="film-details__add-emoji-label">${isEmotion ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : ''}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(textComment)}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}>${he.encode(textComment)}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="smile" value="smile">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="smile" value="smile" ${isDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="smile">
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="sleeping" value="sleeping">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="sleeping" value="sleeping" ${isDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="sleeping">
                 <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="puke" value="puke">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="puke" value="puke" ${isDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="puke">
                 <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="angry" value="angry">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="angry" value="angry" ${isDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="angry">
                 <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
               </label>
@@ -149,6 +150,7 @@ const createDetailsTemplate = (film, comments) => {
 export default class DetailsView extends SmartView{
   #film = null;
   #comments = null;
+  #deletingComment = null;
 
   constructor(film, comments) {
     super();
@@ -185,7 +187,19 @@ export default class DetailsView extends SmartView{
 
   setDeleteCommentHandler = (callback) => {
     this._callback.deleteComment = callback;
-    this.element.querySelector('.film-details__comments-list').addEventListener('click', this._callback.deleteComment);
+    const deleteButtonList = this.element.querySelectorAll('.film-details__comment-delete');
+
+    deleteButtonList.forEach((button) => {
+      button.addEventListener('click', this.#handleDeleteComment);
+    });
+  }
+
+  #handleDeleteComment = (evt) => {
+    const numberOfComment = Array.from(this.element.getElementsByClassName('film-details__comment-delete')).indexOf(evt.target);
+    this.#deletingComment = evt.target.closest('.film-details__comment');
+    this.deletingCommentId = this._data.comments[numberOfComment];
+    this._data.deletingCommentId = this.deletingCommentId;
+    this._callback.deleteComment();
   }
 
   #closeBtnHandler = (evt) => {
@@ -204,33 +218,17 @@ export default class DetailsView extends SmartView{
     }
     this.updateData({
       isEmotion: true,
-      activeEmoji: evt.target.id,
+      emoji: evt.target.id,
     });
   }
 
-  deleteCommentHandler = (evt) => {
-    if (evt.target.className !== 'film-details__comment-delete') {
-      return;
-    }
-    evt.preventDefault();
-    const numberOfComment = Array.from(this.element.getElementsByClassName('film-details__comment-delete')).indexOf(evt.target);
-    this.deletingCommentId = this._data.comments[numberOfComment];
-  }
-
-  getFilm = () => (this.#film)
-
-  addComment = () => {
-    if (this._data.activeEmoji === '' || this._data.text === '') {
-      return;
-    }
+  getNewComment = () => {
     const newComment = {
-      emoji: `./images/emoji/${this._data.activeEmoji}.png`,
+      emoji: this._data.emoji,
       text: this._data.textComment,
-      date: dayjs(),
-      author: 'Author',
     };
-    this._data.comments.push(newComment);
-    this.#update(this._data);
+
+    return newComment;
   }
 
   restoreHandlers = () => {
@@ -254,25 +252,41 @@ export default class DetailsView extends SmartView{
     );
   }
 
-  #update = (data) => {
-    this.updateData(
-      DetailsView.parseDataToFilm(data),
-    );
-  }
-
   static parseFilmToData = (film) => ({...film,
     isEmotion: false,
-    activeEmoji: '',
     textComment: '',
+    isDisabled: false,
+    deletingCommentId: null,
   })
 
   static parseDataToFilm = (data) => {
     const film = {...data};
 
     delete film.isEmotion;
-    delete film.activeEmoji;
     delete film.textComment;
+    delete film.isDisabled;
+    delete film.deletingCommentId;
 
     return film;
+  }
+
+  shakeComment(callback) {
+    const shakedElement = this.#deletingComment;
+
+    shakedElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      shakedElement.style.animation = '';
+      callback();
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  shakeForm(callback) {
+    const shakedElement = this.element.querySelector('.film-details__new-comment');
+
+    shakedElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      shakedElement.style.animation = '';
+      callback();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }

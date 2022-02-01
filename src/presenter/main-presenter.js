@@ -62,6 +62,11 @@ export default class MainPresenter {
     }
   }
 
+  getNofilteredFilms = () => {
+    const films = this.#filmsModel.films;
+    return films;
+  }
+
   init = () => {
     this.#filmsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -77,6 +82,7 @@ export default class MainPresenter {
 
     this.#filmsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
+    this.#commentsModel.removeObserver(this.#handleModelEvent);
   }
 
   #renderProfile = () => {
@@ -116,9 +122,10 @@ export default class MainPresenter {
     } else {
       this.#renderSort();
       this.#renderFilmList();
-      this.#renderRated();
-      this.#renderCommented();
     }
+
+    this.#renderRated();
+    this.#renderCommented();
   }
 
   #renderFilmList = () => {
@@ -134,12 +141,21 @@ export default class MainPresenter {
     }
   }
 
+  #clearFilmList = () => {
+    this.#filmPresenter.forEach((presenter) => presenter.destroy());
+    this.#filmPresenter.clear();
+    this.#renderedFilmCount = FILM_COUNT_PER_STEP;
+    remove(this.#showMoreBtnComponent);
+  }
+
   #clearContent = (resetSortType = false) => {
     remove(this.#sortComponent);
     this.#clearFilmList();
     remove(this.#emptyComponent);
     remove(this.#ratedComponent);
     remove(this.#commentedComponent);
+
+    this.#renderedFilmCount = FILM_COUNT_PER_STEP;
 
     if (resetSortType) {
       this.#currentSortType = SortType.DEFAULT;
@@ -162,7 +178,7 @@ export default class MainPresenter {
   }
 
   #renderFilm = (filmListElement, film) => {
-    const filmPresenter = new FilmPresenter(filmListElement, this.#handleViewAction);
+    const filmPresenter = new FilmPresenter(filmListElement, this.#handleViewAction, this.#openDetails);
     filmPresenter.init(film, this.#openDetails);
     this.#filmPresenter.set(film.id, filmPresenter);
   }
@@ -182,10 +198,22 @@ export default class MainPresenter {
   }
 
   #renderRated = () => {
+    const ratingFilms = this.#filmsModel.films.filter((film) => film.rating > 0);
+
+    if (ratingFilms.length === 0) {
+      return;
+    }
+
     render(this.#mainElement, this.#ratedComponent, renderPosition.BEFOREEND);
   }
 
   #renderCommented = () => {
+    const commentedFilms = this.#filmsModel.films.filter((film) => film.comments.length > 0);
+
+    if (commentedFilms.length === 0) {
+      return;
+    }
+
     render(this.#mainElement, this.#commentedComponent, renderPosition.BEFOREEND);
   }
 
@@ -210,22 +238,17 @@ export default class MainPresenter {
     }
   }
 
-  #clearFilmList = () => {
-    this.#filmPresenter.forEach((presenter) => presenter.destroy());
-    this.#filmPresenter.clear();
-    this.#renderedFilmCount = FILM_COUNT_PER_STEP;
-    remove(this.#showMoreBtnComponent);
-  }
-
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
         this.#filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
+        this.#detailsPresenter.setAddingComment();
         this.#commentsModel.addComment(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
+        this.#detailsPresenter.setDeletingComment();
         this.#commentsModel.deleteComment(updateType, update);
         break;
     }
@@ -236,6 +259,8 @@ export default class MainPresenter {
       case UpdateType.PATCH:
         this.#filmPresenter.get(data.id).init(data);
         this.#detailsPresenter.init(data);
+        remove(this.#commentedComponent);
+        this.#renderCommented();
         break;
       case UpdateType.MINOR:
         this.#renderContent();
@@ -257,6 +282,12 @@ export default class MainPresenter {
         this.#renderContent();
         this.#renderProfile();
         this.#renderTotal();
+        break;
+      case UpdateType.ERROR_DELETE_COMMENT:
+        this.#detailsPresenter.setAbortingDeleteComment();
+        break;
+      case UpdateType.ERROR_ADD_COMMENT:
+        this.#detailsPresenter.setAbortingAddComment();
         break;
     }
   }

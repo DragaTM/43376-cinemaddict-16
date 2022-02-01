@@ -9,17 +9,17 @@ export default class FilmPresenter {
   #film = null;
   #openDetails = null;
 
-  constructor(siteListElement, changeData) {
+  constructor(siteListElement, changeData, openDetails) {
     this.#siteListElement = siteListElement;
     this.#changeData = changeData;
+    this.#openDetails = openDetails;
   }
 
-  init = (film, openDetails) => {
+  init = (film) => {
     this.#film = film;
     const prevFilmCard = this.#filmCard;
     this.#filmCard = new FilmView(film);
     this.#setAllHandlers();
-    this.#openDetails = openDetails;
 
     if (prevFilmCard === null) {
       render(this.#siteListElement, this.#filmCard, renderPosition.BEFOREEND);
@@ -29,9 +29,14 @@ export default class FilmPresenter {
       return;
     }
 
+    this.#filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
+      this.#openDetails(film);
+    });
+
     if (this.#siteListElement.contains(prevFilmCard.element)) {
       replace(this.#filmCard, prevFilmCard);
     }
+
     remove(prevFilmCard);
   }
 
@@ -54,6 +59,12 @@ export default class FilmPresenter {
   }
 
   #handleWatchedClick = () => {
+    if (this.#film.isWatched) {
+      this.#film.watchingDate = null;
+    } else {
+      this.#film.watchingDate = new Date();
+    }
+
     this.#changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
