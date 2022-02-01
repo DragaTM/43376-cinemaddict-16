@@ -7,7 +7,7 @@ import {transformArrayToString, transformMinutesToHours} from '../utils.js';
 dayjs.extend(relativeTime);
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
-const createCommentTemplate = (comments, isDeleting, isDisabled) => comments.map((comment) => (`<li class="film-details__comment">
+const createCommentTemplate = (comments, isDisabled, deletingCommentId) => comments.map((comment) => (`<li class="film-details__comment">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
       </span>
@@ -16,20 +16,20 @@ const createCommentTemplate = (comments, isDeleting, isDisabled) => comments.map
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${comment.author}</span>
           <span class="film-details__comment-day">${dayjs(comment.date).fromNow()}</span>
-          <button class="film-details__comment-delete" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+          <button class="film-details__comment-delete" ${isDisabled ? 'disabled' : ''}>${deletingCommentId === comment.id ? 'Deleting...' : 'Delete'}</button>
         </p>
       </div>
     </li>`)).join('');
 
 const createDetailsTemplate = (film, comments) => {
-  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, poster, rating, time, releaseDate, isEmotion, emoji, textComment, director, ageRating, country, isDeleting, isDisabled, isAdding} = film;
+  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, poster, rating, time, releaseDate, isEmotion, emoji, textComment, director, ageRating, country, isDisabled, deletingCommentId} = film;
   const watchlistActive = inWatchlist ? ' film-details__control-button--active' : '';
   const watchedActive = isWatched ? ' film-details__control-button--active' : '';
   const favoriteActive = isFavorite ? ' film-details__control-button--active' : '';
   const watchlistText = inWatchlist ? 'Already in watchlist' : 'Add to watchlist';
   const watchedText = isWatched ? 'Already watched' : 'Add to watched';
   const favoriteText = isFavorite ? 'Already favorite' : 'Add to favorites';
-  const commentsTemplate = createCommentTemplate(comments, isDeleting, isDisabled);
+  const commentsTemplate = createCommentTemplate(comments, isDisabled, deletingCommentId);
   const date = dayjs(releaseDate).format('D MMMM YYYY');
   const actorsList = transformArrayToString(actors);
   const writersList = transformArrayToString(writers);
@@ -187,7 +187,19 @@ export default class DetailsView extends SmartView{
 
   setDeleteCommentHandler = (callback) => {
     this._callback.deleteComment = callback;
-    this.element.querySelector('.film-details__comments-list').addEventListener('click', this._callback.deleteComment);
+    const deleteButtonList = this.element.querySelectorAll('.film-details__comment-delete');
+
+    deleteButtonList.forEach((button) => {
+      button.addEventListener('click', this.#handleDeleteComment);
+    });
+  }
+
+  #handleDeleteComment = (evt) => {
+    const numberOfComment = Array.from(this.element.getElementsByClassName('film-details__comment-delete')).indexOf(evt.target);
+    this.#deletingComment = evt.target.closest('.film-details__comment');
+    this.deletingCommentId = this._data.comments[numberOfComment];
+    this._data.deletingCommentId = this.deletingCommentId;
+    this._callback.deleteComment();
   }
 
   #closeBtnHandler = (evt) => {
@@ -208,16 +220,6 @@ export default class DetailsView extends SmartView{
       isEmotion: true,
       emoji: evt.target.id,
     });
-  }
-
-  deleteCommentHandler = (evt) => {
-    if (evt.target.className !== 'film-details__comment-delete') {
-      return;
-    }
-    evt.preventDefault();
-    const numberOfComment = Array.from(this.element.getElementsByClassName('film-details__comment-delete')).indexOf(evt.target);
-    this.#deletingComment = evt.target.closest('.film-details__comment');
-    this.deletingCommentId = this._data.comments[numberOfComment];
   }
 
   getNewComment = () => {
@@ -250,17 +252,11 @@ export default class DetailsView extends SmartView{
     );
   }
 
-  #update = (data) => {
-    this.updateData(
-      DetailsView.parseDataToFilm(data),
-    );
-  }
-
   static parseFilmToData = (film) => ({...film,
     isEmotion: false,
     textComment: '',
     isDisabled: false,
-    isDeleting: false,
+    deletingCommentId: null,
   })
 
   static parseDataToFilm = (data) => {
@@ -269,13 +265,14 @@ export default class DetailsView extends SmartView{
     delete film.isEmotion;
     delete film.textComment;
     delete film.isDisabled;
-    delete film.isDeleting;
+    delete film.deletingCommentId;
 
     return film;
   }
 
   shakeComment(callback) {
     const shakedElement = this.#deletingComment;
+
     shakedElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     setTimeout(() => {
       shakedElement.style.animation = '';
@@ -285,6 +282,7 @@ export default class DetailsView extends SmartView{
 
   shakeForm(callback) {
     const shakedElement = this.element.querySelector('.film-details__new-comment');
+
     shakedElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     setTimeout(() => {
       shakedElement.style.animation = '';

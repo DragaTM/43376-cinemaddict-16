@@ -73,10 +73,6 @@ export default class DetailsPresenter {
   };
 
   #handleDeleteComment = () => {
-    if (this.#filmDetails.deletingCommentId === undefined) {
-      return;
-    }
-
     this.#changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
@@ -140,14 +136,14 @@ export default class DetailsPresenter {
   setAddingComment = () => {
     this.#filmDetails.updateData({
       isDisabled: true,
-    })
+    });
   }
 
   setDeletingComment = () => {
     this.#filmDetails.updateData({
       isDisabled: true,
       isDeleting: true,
-    })
+    });
   }
 
   setAbortingAddComment = () => {
@@ -155,8 +151,8 @@ export default class DetailsPresenter {
       this.#filmDetails.updateData({
         isDisabled: false,
       });
-    }
-    
+    };
+
     this.#filmDetails.shakeForm(resetDetails);
   }
 
@@ -164,10 +160,10 @@ export default class DetailsPresenter {
     const resetDetails = () => {
       this.#filmDetails.updateData({
         isDisabled: false,
-        isDeleting: false,
+        deletingCommentId: null,
       });
-    }
-    console.log('2');
+    };
+
     this.#filmDetails.shakeComment(resetDetails);
   }
 }
