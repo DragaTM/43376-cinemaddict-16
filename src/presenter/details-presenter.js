@@ -136,4 +136,17 @@ export default class DetailsPresenter {
         break;
     }
   }
+
+  setAddingComment = () => {
+    this.#filmDetails.updateData({
+      isDisabled: true,
+    })
+  }
+
+  setDeletingComment = () => {
+    this.#filmDetails.updateData({
+      isDisabled: true,
+      isDeleting: true,
+    })
+  }
 }

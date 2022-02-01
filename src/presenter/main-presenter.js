@@ -124,8 +124,8 @@ export default class MainPresenter {
       this.#renderFilmList();
     }
 
-    //this.#renderRated();
-    //this.#renderCommented();
+    this.#renderRated();
+    this.#renderCommented();
   }
 
   #renderFilmList = () => {
@@ -210,7 +210,7 @@ export default class MainPresenter {
     render(this.#mainElement, this.#ratedComponent, renderPosition.BEFOREEND);
 
     sortedRatingFilms.forEach((film) => {
-      this.#renderFilm(ratedFilmsList, film);
+      
     });
   }
 
@@ -227,7 +227,7 @@ export default class MainPresenter {
     render(this.#mainElement, this.#commentedComponent, renderPosition.BEFOREEND);
 
     sortedCommentedFilms.forEach((film) => {
-      this.#renderFilm(commentedFilmsList, film);
+      
     });
   }
 
@@ -258,9 +258,11 @@ export default class MainPresenter {
         this.#filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
+        this.#detailsPresenter.setAddingComment();
         this.#commentsModel.addComment(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
+        this.#detailsPresenter.setDeletingComment();
         this.#commentsModel.deleteComment(updateType, update);
         break;
     }
@@ -271,8 +273,8 @@ export default class MainPresenter {
       case UpdateType.PATCH:
         this.#filmPresenter.get(data.id).init(data);
         this.#detailsPresenter.init(data);
-        //remove(this.#commentedComponent);
-        //this.#renderCommented();
+        remove(this.#commentedComponent);
+        this.#renderCommented();
         break;
       case UpdateType.MINOR:
         this.#renderContent();

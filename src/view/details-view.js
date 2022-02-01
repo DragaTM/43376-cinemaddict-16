@@ -6,7 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import {transformArrayToString, transformMinutesToHours} from '../utils.js';
 dayjs.extend(relativeTime);
 
-const createCommentTemplate = (comments) => comments.map((comment) => (`<li class="film-details__comment">
+const createCommentTemplate = (comments, isDeleting, isDisabled) => comments.map((comment) => (`<li class="film-details__comment">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
       </span>
@@ -15,20 +15,20 @@ const createCommentTemplate = (comments) => comments.map((comment) => (`<li clas
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${comment.author}</span>
           <span class="film-details__comment-day">${dayjs(comment.date).fromNow()}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <button class="film-details__comment-delete" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
         </p>
       </div>
     </li>`)).join('');
 
 const createDetailsTemplate = (film, comments) => {
-  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, poster, rating, time, releaseDate, isEmotion, emoji, textComment, director, ageRating, country} = film;
+  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, poster, rating, time, releaseDate, isEmotion, emoji, textComment, director, ageRating, country, isDeleting, isDisabled, isAdding} = film;
   const watchlistActive = inWatchlist ? ' film-details__control-button--active' : '';
   const watchedActive = isWatched ? ' film-details__control-button--active' : '';
   const favoriteActive = isFavorite ? ' film-details__control-button--active' : '';
   const watchlistText = inWatchlist ? 'Already in watchlist' : 'Add to watchlist';
   const watchedText = isWatched ? 'Already watched' : 'Add to watched';
   const favoriteText = isFavorite ? 'Already favorite' : 'Add to favorites';
-  const commentsTemplate = createCommentTemplate(comments);
+  const commentsTemplate = createCommentTemplate(comments, isDeleting, isDisabled);
   const date = dayjs(releaseDate).format('D MMMM YYYY');
   const actorsList = transformArrayToString(actors);
   const writersList = transformArrayToString(writers);
@@ -115,26 +115,26 @@ const createDetailsTemplate = (film, comments) => {
             <div class="film-details__add-emoji-label">${isEmotion ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : ''}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(textComment)}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}>${he.encode(textComment)}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="smile" value="smile">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="smile" value="smile" ${isDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="smile">
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="sleeping" value="sleeping">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="sleeping" value="sleeping" ${isDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="sleeping">
                 <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="puke" value="puke">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="puke" value="puke" ${isDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="puke">
                 <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="angry" value="angry">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="angry" value="angry" ${isDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="angry">
                 <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
               </label>
@@ -260,6 +260,8 @@ export default class DetailsView extends SmartView{
   static parseFilmToData = (film) => ({...film,
     isEmotion: false,
     textComment: '',
+    isDisabled: false,
+    isDeleting: false,
   })
 
   static parseDataToFilm = (data) => {
@@ -267,6 +269,8 @@ export default class DetailsView extends SmartView{
 
     delete film.isEmotion;
     delete film.textComment;
+    delete film.isDisabled;
+    delete film.isDeleting;
 
     return film;
   }
