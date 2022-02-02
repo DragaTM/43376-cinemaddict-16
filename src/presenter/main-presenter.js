@@ -223,6 +223,7 @@ export default class MainPresenter {
     this.#showMoreBtnComponent.setClickHandler(this.#handleShowMoreBtnClick);
   }
 
+
   #handleShowMoreBtnClick = () => {
     const filmCount = this.films.length;
     const newRenderedFilmCount = Math.min(filmCount, this.#renderedFilmCount + FILM_COUNT_PER_STEP);
