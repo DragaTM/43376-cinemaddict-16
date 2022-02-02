@@ -62,6 +62,7 @@ export default class MainPresenter {
         return filteredFilms.sort(sortById);
     }
   }
+  
 
   init = () => {
     this.#filmsModel.addObserver(this.#handleModelEvent);
