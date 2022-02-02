@@ -46,9 +46,7 @@ export default class FilmPresenter {
     this.#filmCard.setFavoriteClickHandler(this.#handleFavoriteClick);
   }
 
-  destroy = () => {
-    remove(this.#filmCard);
-  }
+  getFilmCard = () => this.#filmCard.element
 
   #handleWatchlistClick = () => {
     this.#changeData(
