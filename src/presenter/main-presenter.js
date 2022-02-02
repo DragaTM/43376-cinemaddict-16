@@ -11,7 +11,7 @@ import DetailsPresenter from './details-presenter.js';
 import TotalView from '../view/total-view.js';
 import {render, renderPosition, remove} from '../render.js';
 import {FILM_COUNT_PER_STEP, SortType, UpdateType, FilterType, UserAction} from '../const.js';
-import {sortByDate, sortByRating, sortById, filter} from '../utils.js';
+import {sortByDate, sortByRating, sortById, sortByCommented, filter} from '../utils.js';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteFooterStatElement = document.querySelector('.footer__statistics');
@@ -35,6 +35,7 @@ export default class MainPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
   #filmPresenter = new Map();
+  #filmsCardsInList = new Set();
   #renderedFilmCount = FILM_COUNT_PER_STEP;
   #detailsPresenter = null;
   #detailsId = null;
@@ -60,11 +61,6 @@ export default class MainPresenter {
       default:
         return filteredFilms.sort(sortById);
     }
-  }
-
-  getNofilteredFilms = () => {
-    const films = this.#filmsModel.films;
-    return films;
   }
 
   init = () => {
@@ -142,8 +138,8 @@ export default class MainPresenter {
   }
 
   #clearFilmList = () => {
-    this.#filmPresenter.forEach((presenter) => presenter.destroy());
-    this.#filmPresenter.clear();
+    this.#filmsCardsInList.forEach((filmCard) => filmCard.remove());
+    this.#filmsCardsInList.clear();
     this.#renderedFilmCount = FILM_COUNT_PER_STEP;
     remove(this.#showMoreBtnComponent);
   }
@@ -181,6 +177,13 @@ export default class MainPresenter {
     const filmPresenter = new FilmPresenter(filmListElement, this.#handleViewAction, this.#openDetails);
     filmPresenter.init(film, this.#openDetails);
     this.#filmPresenter.set(film.id, filmPresenter);
+    this.#filmsCardsInList.add(filmPresenter.getFilmCard());
+  }
+
+  #renderExtraFilm = (filmListElement, film) => {
+    const filmPresenter = new FilmPresenter(filmListElement, this.#handleViewAction, this.#openDetails);
+    filmPresenter.init(film, this.#openDetails);
+    this.#filmPresenter.set(film.id, filmPresenter);
   }
 
   #openDetails = (film) => {
@@ -205,6 +208,13 @@ export default class MainPresenter {
     }
 
     render(this.#mainElement, this.#ratedComponent, renderPosition.BEFOREEND);
+
+    const sortedRatingFilms = ratingFilms.sort(sortByRating).slice(0, 2);
+    const ratedFilmsList = this.#ratedComponent.element.querySelector('.films-list__container');
+
+    sortedRatingFilms.forEach((film) => {
+      this.#renderExtraFilm(ratedFilmsList, film);
+    });
   }
 
   #renderCommented = () => {
@@ -215,6 +225,13 @@ export default class MainPresenter {
     }
 
     render(this.#mainElement, this.#commentedComponent, renderPosition.BEFOREEND);
+
+    const sortedCommentedFilms = commentedFilms.sort(sortByCommented).slice(0, 2);
+    const commentedFilmsList = this.#commentedComponent.element.querySelector('.films-list__container');
+
+    sortedCommentedFilms.forEach((film) => {
+      this.#renderExtraFilm(commentedFilmsList, film);
+    });
   }
 
   #renderShowMoreBtn = () => {
