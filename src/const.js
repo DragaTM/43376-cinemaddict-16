@@ -1,5 +1,8 @@
-export const FILM_COUNT = 18;
 export const FILM_COUNT_PER_STEP = 5;
+export const FOR_ALL_TIME = 'all';
+export const MINUTES_IN_HOUR = 60;
+export const AUTHORIZATION = 'Basic jksdflw574hhssdwriyp';
+export const END_POINT = 'https://16.ecmascript.pages.academy/cinemaddict';
 
 export const SortType = {
   DEFAULT: 'default',
@@ -17,6 +20,10 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  LOAD_COMMENTS: 'LOAD_COMMENTS',
+  ERROR_ADD_COMMENT: 'ERROR_ADD_COMMENT',
+  ERROR_DELETE_COMMENT: 'ERROR_DELETE_COMMENT',
 };
 
 export const FilterType = {
@@ -34,25 +41,19 @@ export const MenuItem = {
 export const isEscKey = (e) => {
   if (e.key === 'Escape' || e.key === 'Esc') {
     return true;
-  } else {
-    return false;
   }
 };
 
-export const isSubmitKeys = (e) => e.keyCode === 13 && e.ctrlKey;
+export const isSubmitKeys = (e) => e.key === 'Enter' && (e.metaKey || e.ctrlKey);
 
 export const isClickOnLink = (e) => {
   if (e.target.tagName !== 'A') {
     return true;
-  } else {
-    return false;
   }
 };
 
 export const isClickOnInput = (e) => {
   if (e.target.tagName !== 'INPUT') {
     return true;
-  } else {
-    return false;
   }
 };
