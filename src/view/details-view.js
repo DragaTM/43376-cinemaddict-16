@@ -22,7 +22,7 @@ const createCommentTemplate = (comments, isDisabled, deletingCommentId) => comme
     </li>`)).join('');
 
 const createDetailsTemplate = (film, comments) => {
-  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genre, description, poster, rating, time, releaseDate, isEmotion, emoji, textComment, director, ageRating, country, isDisabled, deletingCommentId} = film;
+  const {name, alternativeName, inWatchlist, isWatched, isFavorite, actors, writers, genres, description, poster, rating, time, releaseDate, isEmotion, emoji, textComment, director, ageRating, country, isDisabled, deletingCommentId} = film;
   const watchlistActive = inWatchlist ? ' film-details__control-button--active' : '';
   const watchedActive = isWatched ? ' film-details__control-button--active' : '';
   const favoriteActive = isFavorite ? ' film-details__control-button--active' : '';
@@ -34,7 +34,7 @@ const createDetailsTemplate = (film, comments) => {
   const actorsList = transformArrayToString(actors);
   const writersList = transformArrayToString(writers);
   const runTime = transformMinutesToHours(time);
-  const genres = genre.map((genreItem) => `<span class="film-details__genre">${genreItem}</span>`).join('');
+  const genresList = genres.map((genreItem) => `<span class="film-details__genre">${genreItem}</span>`).join('');
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -89,7 +89,7 @@ const createDetailsTemplate = (film, comments) => {
               <tr class="film-details__row">
                 <td class="film-details__term">Genres</td>
                 <td class="film-details__cell">
-                  ${genres}</td>
+                  ${genresList}</td>
               </tr>
             </table>
 
@@ -165,6 +165,20 @@ export default class DetailsView extends SmartView{
     return createDetailsTemplate(this._data, this.#comments);
   }
 
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setCloseClickHandler(this._callback.click);
+    this.setDeleteClickHandler(this._callback.deleteComment);
+  }
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#emojiClickHandler);
+    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputClickHandler);
+  }
+
   setWatchlistClickHandler = (callback) => {
     this._callback.watchlistClick = callback;
     this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this._callback.watchlistClick);
@@ -182,32 +196,19 @@ export default class DetailsView extends SmartView{
 
   setCloseClickHandler = (callback) => {
     this._callback.click = callback;
-    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeBtnHandler);
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeClickHandler);
   }
 
-  setDeleteCommentHandler = (callback) => {
+  setDeleteClickHandler = (callback) => {
     this._callback.deleteComment = callback;
-    const deleteButtonList = this.element.querySelectorAll('.film-details__comment-delete');
+    const deleteButtons = this.element.querySelectorAll('.film-details__comment-delete');
 
-    deleteButtonList.forEach((button) => {
-      button.addEventListener('click', this.#handleDeleteComment);
+    deleteButtons.forEach((button) => {
+      button.addEventListener('click', this.#handleDeleteClick);
     });
   }
 
-  #handleDeleteComment = (evt) => {
-    const numberOfComment = Array.from(this.element.getElementsByClassName('film-details__comment-delete')).indexOf(evt.target);
-    this.#deletingComment = evt.target.closest('.film-details__comment');
-    this.deletingCommentId = this._data.comments[numberOfComment];
-    this._data.deletingCommentId = this.deletingCommentId;
-    this._callback.deleteComment();
-  }
-
-  #closeBtnHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.click();
-  }
-
-  #commentInputHandler = (evt) => {
+  #commentInputClickHandler = (evt) => {
     evt.preventDefault();
     this.updateData({textComment: evt.target.value}, true);
   }
@@ -222,6 +223,19 @@ export default class DetailsView extends SmartView{
     });
   }
 
+  #handleDeleteClick = (evt) => {
+    const numberOfComment = Array.from(this.element.getElementsByClassName('film-details__comment-delete')).indexOf(evt.target);
+    this.#deletingComment = evt.target.closest('.film-details__comment');
+    this.deletingCommentId = this._data.comments[numberOfComment];
+    this._data.deletingCommentId = this.deletingCommentId;
+    this._callback.deleteComment();
+  }
+
+  #closeClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  }
+
   getNewComment = () => {
     const newComment = {
       emoji: this._data.emoji,
@@ -229,21 +243,6 @@ export default class DetailsView extends SmartView{
     };
 
     return newComment;
-  }
-
-  restoreHandlers = () => {
-    this.#setInnerHandlers();
-    this.setWatchlistClickHandler(this._callback.watchlistClick);
-    this.setWatchedClickHandler(this._callback.watchedClick);
-    this.setFavoriteClickHandler(this._callback.favoriteClick);
-    this.setCloseClickHandler(this._callback.click);
-    this.setDeleteCommentHandler(this._callback.deleteComment);
-  }
-
-  #setInnerHandlers = () => {
-    this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#emojiClickHandler);
-    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
-    this.element.querySelector('.film-details__comments-list').addEventListener('click', this.deleteCommentHandler);
   }
 
   reset = (film) => {
@@ -258,18 +257,7 @@ export default class DetailsView extends SmartView{
     isDisabled: false,
     deletingCommentId: null,
   })
-
-  static parseDataToFilm = (data) => {
-    const film = {...data};
-
-    delete film.isEmotion;
-    delete film.textComment;
-    delete film.isDisabled;
-    delete film.deletingCommentId;
-
-    return film;
-  }
-
+  
   shakeComment(callback) {
     const shakedElement = this.#deletingComment;
 

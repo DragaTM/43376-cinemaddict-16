@@ -3,13 +3,6 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import {FilterType} from './const.js';
 dayjs.extend(relativeTime);
 
-export const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
 export const sortByDate = (filmA, filmB) => filmB.releaseDate - filmA.releaseDate;
 export const sortByRating = (filmA, filmB) => filmB.rating - filmA.rating;
 export const sortByCommented = (filmA, filmB) => filmB.comments.length - filmA.comments.length;
@@ -51,13 +44,13 @@ export const getGenresInfo = (films) => {
   const stats = {};
 
   for (const film of films) {
-    for (const genreItem of film.genre) {
-      if (stats[genreItem]) {
-        stats[genreItem] += 1;
+    for (const genresItem of film.genres) {
+      if (stats[genresItem]) {
+        stats[genresItem] += 1;
         continue;
       }
 
-      stats[genreItem] = 1;
+      stats[genresItem] = 1;
     }
   }
 
@@ -79,7 +72,7 @@ export const adaptToClient = (film) => {
     poster: film.film_info['poster'],
     rating: film.film_info['total_rating'],
     actors: film.film_info['actors'],
-    genre: film.film_info['genre'],
+    genres: film.film_info['genre'],
     country: film.film_info.release['release_country'],
     time: film.film_info['runtime'],
     writers: film.film_info['writers'],

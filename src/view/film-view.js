@@ -2,12 +2,12 @@ import AbstractView from './abstract-view.js';
 import {transformArrayToString, transformMinutesToHours} from '../utils.js';
 
 const createFilmTemplate = (film) => {
-  const {name, inWatchlist, isWatched, isFavorite, genre, description, comments, poster, rating, time, releaseDate} = film;
+  const {name, inWatchlist, isWatched, isFavorite, genres, description, comments, poster, rating, time, releaseDate} = film;
   const watchlistActive = inWatchlist ? ' film-card__controls-item--active' : '';
   const watchedActive = isWatched ? ' film-card__controls-item--active' : '';
   const favoriteActive = isFavorite ? ' film-card__controls-item--active' : '';
   const year = releaseDate.getFullYear();
-  const genres = transformArrayToString(genre);
+  const genresList = transformArrayToString(genres);
   const runTime = transformMinutesToHours(time);
 
   return `<article class="film-card">
@@ -17,7 +17,7 @@ const createFilmTemplate = (film) => {
 			<p class="film-card__info">
 				<span class="film-card__year">${year}</span>
 				<span class="film-card__duration">${runTime}</span>
-				<span class="film-card__genre">${genres}</span>
+				<span class="film-card__genre">${genresList}</span>
 			</p>
 			<img src="${poster}" alt="" class="film-card__poster">
 			<p class="film-card__description">${description}</p>

@@ -89,7 +89,7 @@ export default class ApiService {
         poster: film['poster'],
         'total_rating': film['rating'],
         actors: film['actors'],
-        genre: film['genre'],
+        genre: film['genres'],
         runtime: film['time'],
         writers: film['writers'],
         release: {
@@ -118,7 +118,7 @@ export default class ApiService {
     delete adaptedFilm.poster;
     delete adaptedFilm.rating;
     delete adaptedFilm.actors;
-    delete adaptedFilm.genre;
+    delete adaptedFilm.genres;
     delete adaptedFilm.country;
     delete adaptedFilm.time;
     delete adaptedFilm.writers;

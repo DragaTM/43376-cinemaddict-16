@@ -41,8 +41,6 @@ export const MenuItem = {
 export const isEscKey = (e) => {
   if (e.key === 'Escape' || e.key === 'Esc') {
     return true;
-  } else {
-    return false;
   }
 };
 
@@ -51,15 +49,11 @@ export const isSubmitKeys = (e) => e.key === 'Enter' && (e.metaKey || e.ctrlKey)
 export const isClickOnLink = (e) => {
   if (e.target.tagName !== 'A') {
     return true;
-  } else {
-    return false;
   }
 };
 
 export const isClickOnInput = (e) => {
   if (e.target.tagName !== 'INPUT') {
     return true;
-  } else {
-    return false;
   }
 };
