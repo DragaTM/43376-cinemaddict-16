@@ -27,7 +27,7 @@ export default class SortView extends AbstractView{
   }
 
   #sortTypeChangeHandler = (e) => {
-    if (isClickOnLink(e)) {
+    if (!isClickOnLink(e)) {
       return;
     }
 

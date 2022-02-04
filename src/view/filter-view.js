@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import {FilterType, MenuItem, isClickOnLink} from '../const.js';
+import {FilterType, MenuItem, isClickOnLink, isClickOnSpan} from '../const.js';
 
 const createFilterTemplate = (filters, currentFilterType) => {
   const all = filters[0];
@@ -35,11 +35,16 @@ export default class FilterView extends AbstractView{
   }
 
   #filterTypeChangeHandler = (e) => {
-    if (isClickOnLink(e)) {
+    if (!isClickOnLink(e) && !isClickOnSpan(e)) {
       return;
     }
 
     e.preventDefault();
-    this._callback.filterTypeChange(e.target.dataset.filterType);
+
+    if (isClickOnSpan(e)) {
+      this._callback.filterTypeChange(e.target.parentElement.dataset.filterType);
+    } else {
+      this._callback.filterTypeChange(e.target.dataset.filterType);
+    }
   }
 }

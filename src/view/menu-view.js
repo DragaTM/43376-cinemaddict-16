@@ -3,7 +3,7 @@ import {MenuItem, isClickOnLink} from '../const.js';
 
 const createMenuTemplate = () => (
   `<nav class="main-navigation">
-    <a href="#stats" class="main-navigation__additional" data-menu-item="${MenuItem.STATS}">Stats</a>
+    <a href="#stats" class="main-navigation__additional main-navigation__additional--active" data-menu-item="${MenuItem.STATS}">Stats</a>
   </nav>`
 );
 
@@ -18,7 +18,7 @@ export default class MenuView extends AbstractView{
   };
 
   #menuClickHandler = (e) => {
-    if (isClickOnLink(e)) {
+    if (!isClickOnLink(e)) {
       return;
     }
 

@@ -119,7 +119,7 @@ export default class StatsView extends SmartView {
   #onClickStatMenu = (evt) => {
     evt.preventDefault();
 
-    if (isClickOnInput(evt)) {
+    if (!isClickOnInput(evt)) {
       const periodElement = this.element.querySelector(`#${evt.target.getAttribute('for')}`);
 
       if (periodElement === null) {

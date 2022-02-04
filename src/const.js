@@ -47,13 +47,19 @@ export const isEscKey = (e) => {
 export const isSubmitKeys = (e) => e.key === 'Enter' && (e.metaKey || e.ctrlKey);
 
 export const isClickOnLink = (e) => {
-  if (e.target.tagName !== 'A') {
+  if (e.target.tagName === 'A') {
     return true;
   }
 };
 
 export const isClickOnInput = (e) => {
-  if (e.target.tagName !== 'INPUT') {
+  if (e.target.tagName === 'INPUT') {
+    return true;
+  }
+};
+
+export const isClickOnSpan = (e) => {
+  if (e.target.tagName === 'SPAN') {
     return true;
   }
 };
