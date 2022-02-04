@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import {transformArrayToString, transformMinutesToHours} from '../utils.js';
+import {transformArrayToString, transformMinutesToHours, transformStringToQuote} from '../utils.js';
 
 const createFilmTemplate = (film) => {
   const {name, inWatchlist, isWatched, isFavorite, genres, description, comments, poster, rating, time, releaseDate} = film;
@@ -9,6 +9,7 @@ const createFilmTemplate = (film) => {
   const year = releaseDate.getFullYear();
   const genresList = transformArrayToString(genres);
   const runTime = transformMinutesToHours(time);
+  const shortDescription = transformStringToQuote(description, 139);
 
   return `<article class="film-card">
 		<a class="film-card__link">
@@ -20,7 +21,7 @@ const createFilmTemplate = (film) => {
 				<span class="film-card__genre">${genresList}</span>
 			</p>
 			<img src="${poster}" alt="" class="film-card__poster">
-			<p class="film-card__description">${description}</p>
+			<p class="film-card__description">${shortDescription}</p>
 			<span class="film-card__comments">${comments.length} comments</span>
 		</a>
 		<div class="film-card__controls">

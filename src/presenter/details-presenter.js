@@ -54,7 +54,7 @@ export default class DetailsPresenter {
     this.#filmDetails.setWatchedClickHandler(this.#handleWatchedClick);
     this.#filmDetails.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmDetails.setCloseClickHandler(this.destroy);
-    this.#filmDetails.setDeleteClickHandler(this.handleDeleteClick);
+    this.#filmDetails.setDeleteClickHandler(this.#handleDeleteClick);
   }
 
   destroy = () => {
