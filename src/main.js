@@ -27,11 +27,15 @@ const handleMenuClick = (menuItem) => {
     case MenuItem.FILMS:
       clearPage();
       mainPresenter.init();
+      menuComponent.element.querySelector('.main-navigation__additional').classList.remove('main-navigation__additional--active');
+      menuComponent.element.querySelector('.main-navigation__items').classList.remove('no-active');
       break;
     case MenuItem.STATS:
       clearPage();
       statsComponent = new StatsView(filmsModel.films);
       render(siteMainElement, statsComponent, renderPosition.BEFOREEND);
+      menuComponent.element.querySelector('.main-navigation__additional').classList.add('main-navigation__additional--active');
+      menuComponent.element.querySelector('.main-navigation__items').classList.add('no-active');
       break;
   }
 };

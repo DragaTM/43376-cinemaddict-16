@@ -250,6 +250,10 @@ button {
   padding: var(--vertical-gap) 0;
 }
 
+.no-active .main-navigation__item--active {
+  color: var(--text-color);
+}
+
 .main-navigation__item:first-child {
   margin-right: 130px;
 }
