@@ -58,10 +58,10 @@ export default class DetailsPresenter {
   }
 
   destroy = () => {
-    this.#filmDetails.reset(this.#film);
-    this.#filmDetails.element.remove();
     document.removeEventListener('keydown', this.#onEscKeyDown);
     document.removeEventListener('keydown', this.#handleSubmitKeyDown);
+    this.#filmDetails.reset(this.#film);
+    this.#filmDetails.element.remove();
     bodyElement.classList.remove('hide-overflow');
   }
 

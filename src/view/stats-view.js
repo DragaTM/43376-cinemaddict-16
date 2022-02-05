@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 dayjs.extend(isBetween);
 
+const BAR_HEIGHT = 50;
 const createStatsTemplate = (currentPeriod, rank, filmsPerPeriod, duration, topGenre) => (`<section class="statistic">
     <p class="statistic__rank">
       Your rank
@@ -135,8 +136,9 @@ export default class StatsView extends SmartView {
   }
 
   #setCharts = () => {
-    const BAR_HEIGHT = 50;
     const statisticCtx = this.element.querySelector('.statistic__chart');
+    const barColor = '#ffe800';
+    const fontColor = '#ffffff';
 
     statisticCtx.height = BAR_HEIGHT * this.#genresList.length;
 
@@ -147,8 +149,8 @@ export default class StatsView extends SmartView {
         labels: this.#genresList,
         datasets: [{
           data: this.#genresCounts,
-          backgroundColor: '#ffe800',
-          hoverBackgroundColor: '#ffe800',
+          backgroundColor: barColor,
+          hoverBackgroundColor: barColor,
           anchor: 'start',
           barThickness: 24,
         }],
@@ -160,7 +162,7 @@ export default class StatsView extends SmartView {
             font: {
               size: 20,
             },
-            color: '#ffffff',
+            color: fontColor,
             anchor: 'start',
             align: 'start',
             offset: 40,
@@ -169,7 +171,7 @@ export default class StatsView extends SmartView {
         scales: {
           yAxes: [{
             ticks: {
-              fontColor: '#ffffff',
+              fontColor: fontColor,
               padding: 100,
               fontSize: 20,
             },

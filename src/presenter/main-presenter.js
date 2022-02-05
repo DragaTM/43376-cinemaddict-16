@@ -274,7 +274,14 @@ export default class MainPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#filmPresenter.get(data.id).init(data);
+        const cardBeforePatching = this.#filmPresenter.get(data.id).getFilmCard();
+        if (this.#filmsCardsInList.has(cardBeforePatching)) {
+          this.#filmsCardsInList.delete(cardBeforePatching);
+          this.#filmPresenter.get(data.id).init(data);
+          this.#filmsCardsInList.add(this.#filmPresenter.get(data.id).getFilmCard());
+        } else {
+          this.#filmPresenter.get(data.id).init(data);
+        }
         this.#detailsPresenter.init(data);
         remove(this.#commentedComponent);
         this.#renderCommented();

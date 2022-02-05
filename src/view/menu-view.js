@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import {MenuItem, isClickOnLink} from '../const.js';
+import {MenuItem, isClickOnLink, isClickOnSpan} from '../const.js';
 
 const createMenuTemplate = () => (
   `<nav class="main-navigation">
@@ -18,11 +18,16 @@ export default class MenuView extends AbstractView{
   };
 
   #menuClickHandler = (e) => {
-    if (!isClickOnLink(e)) {
+    if (!isClickOnLink(e) && !isClickOnSpan(e)) {
       return;
     }
 
     e.preventDefault();
-    this._callback.menuClick(e.target.dataset.menuItem);
+
+    if (isClickOnSpan(e)) {
+      this._callback.menuClick(e.target.parentElement.dataset.menuItem);
+    } else {
+      this._callback.menuClick(e.target.dataset.menuItem);
+    }
   }
 }

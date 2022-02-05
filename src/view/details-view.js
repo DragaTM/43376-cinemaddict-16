@@ -170,7 +170,7 @@ export default class DetailsView extends SmartView{
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
-    this.setCloseClickHandler(this._callback.click);
+    this.setCloseClickHandler(this._callback.closeClick);
     this.setDeleteClickHandler(this._callback.deleteComment);
   }
 
@@ -195,7 +195,7 @@ export default class DetailsView extends SmartView{
   }
 
   setCloseClickHandler = (callback) => {
-    this._callback.click = callback;
+    this._callback.closeClick = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#closeClickHandler);
   }
 
@@ -214,7 +214,7 @@ export default class DetailsView extends SmartView{
   }
 
   #emojiClickHandler = (evt) => {
-    if (isClickOnInput(evt)) {
+    if (!isClickOnInput(evt)) {
       return;
     }
     this.updateData({
@@ -233,7 +233,7 @@ export default class DetailsView extends SmartView{
 
   #closeClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.click();
+    this._callback.closeClick();
   }
 
   getNewComment = () => {
