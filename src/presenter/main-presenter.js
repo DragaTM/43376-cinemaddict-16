@@ -188,17 +188,14 @@ export default class MainPresenter {
   }
 
   #openDetails = (film) => {
-    this.#closeDetails();
-    this.#detailsPresenter = new DetailsPresenter(this.#handleViewAction, this.#commentsModel);
-    this.#detailsPresenter.init(film);
-    this.#detailsId = film.id;
-  }
-
-  #closeDetails = () => {
     if (this.#detailsPresenter !== null) {
       this.#detailsPresenter.destroy();
       this.#detailsId = null;
     }
+
+    this.#detailsPresenter = new DetailsPresenter(this.#handleViewAction, this.#commentsModel);
+    this.#detailsPresenter.init(film);
+    this.#detailsId = film.id;
   }
 
   #renderRated = () => {

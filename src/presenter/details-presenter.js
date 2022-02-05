@@ -31,6 +31,7 @@ export default class DetailsPresenter {
     const prevFilmDetails = this.#filmDetails;
     this.#filmDetails = new DetailsView(this.#film, this.comments);
     this.#setAllHandlers();
+
     bodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this.#onEscKeyDown);
     document.addEventListener('keydown', this.#handleSubmitKeyDown);
