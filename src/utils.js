@@ -36,11 +36,11 @@ export const transformMinutesToHours = (time) => {
 
 export const transformStringToQuote = (text, length) => {
   if (text.length > length) {
-    return text.slice(0, length - 1) + '...';
+    return `${text.slice(0, length - 1)}...`;
   } else {
     return text;
   }
-}
+};
 
 export const getRank = (filmsCount) => {
   if (filmsCount <= 10) {return 'Novice';}

@@ -257,7 +257,7 @@ export default class DetailsView extends SmartView{
     isDisabled: false,
     deletingCommentId: null,
   })
-  
+
   shakeComment(callback) {
     const shakedElement = this.#deletingComment;
 

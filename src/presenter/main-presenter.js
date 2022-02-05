@@ -40,6 +40,7 @@ export default class MainPresenter {
   #detailsPresenter = null;
   #detailsId = null;
   #isLoading = true;
+  #cardBeforePatching = null;
 
   constructor(siteMainElement, filmsModel, filterModel, commentsModel) {
     this.#siteMainElement = siteMainElement;
@@ -274,9 +275,9 @@ export default class MainPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        const cardBeforePatching = this.#filmPresenter.get(data.id).getFilmCard();
-        if (this.#filmsCardsInList.has(cardBeforePatching)) {
-          this.#filmsCardsInList.delete(cardBeforePatching);
+        this.#cardBeforePatching = this.#filmPresenter.get(data.id).getFilmCard();
+        if (this.#filmsCardsInList.has(this.#cardBeforePatching)) {
+          this.#filmsCardsInList.delete(this.#cardBeforePatching);
           this.#filmPresenter.get(data.id).init(data);
           this.#filmsCardsInList.add(this.#filmPresenter.get(data.id).getFilmCard());
         } else {
