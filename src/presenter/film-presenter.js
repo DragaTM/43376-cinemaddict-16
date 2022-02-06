@@ -15,6 +15,8 @@ export default class FilmPresenter {
     this.#openDetails = openDetails;
   }
 
+  getFilmCard = () => this.#filmCard.element
+
   init = (film) => {
     this.#film = film;
     const prevFilmCard = this.#filmCard;
@@ -23,13 +25,13 @@ export default class FilmPresenter {
 
     if (prevFilmCard === null) {
       render(this.#siteListElement, this.#filmCard, renderPosition.BEFOREEND);
-      this.#filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
+      this.#filmCard.element.querySelector(`.film-card__link-${this.#film.id}`).addEventListener('click', () => {
         this.#openDetails(film);
       });
       return;
     }
 
-    this.#filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
+    this.#filmCard.element.querySelector(`.film-card__link-${this.#film.id}`).addEventListener('click', () => {
       this.#openDetails(film);
     });
 
@@ -45,8 +47,6 @@ export default class FilmPresenter {
     this.#filmCard.setWatchedClickHandler(this.#handleWatchedClick);
     this.#filmCard.setFavoriteClickHandler(this.#handleFavoriteClick);
   }
-
-  getFilmCard = () => this.#filmCard.element
 
   #handleWatchlistClick = () => {
     this.#changeData(

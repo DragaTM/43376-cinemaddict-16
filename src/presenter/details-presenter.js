@@ -33,8 +33,8 @@ export default class DetailsPresenter {
     this.#setAllHandlers();
 
     bodyElement.classList.add('hide-overflow');
-    document.addEventListener('keydown', this.#onEscKeyDown);
-    document.addEventListener('keydown', this.#handleSubmitKeyDown);
+    document.addEventListener('keydown', this.#handleEscKeyPress);
+    document.addEventListener('keydown', this.#handleSubmitKeyPress);
 
     if (prevFilmDetails === null) {
       render(bodyElement, this.#filmDetails, renderPosition.BEFOREEND);
@@ -55,25 +55,25 @@ export default class DetailsPresenter {
     this.#filmDetails.setWatchedClickHandler(this.#handleWatchedClick);
     this.#filmDetails.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmDetails.setCloseClickHandler(this.destroy);
-    this.#filmDetails.setDeleteClickHandler(this.#handleDeleteClick);
+    this.#filmDetails.setDeleteClickHandler(this.#handleDeleteButtonClick);
   }
 
   destroy = () => {
-    document.removeEventListener('keydown', this.#onEscKeyDown);
-    document.removeEventListener('keydown', this.#handleSubmitKeyDown);
+    document.removeEventListener('keydown', this.#handleEscKeyPress);
+    document.removeEventListener('keydown', this.#handleSubmitKeyPress);
     this.#filmDetails.reset(this.#film);
     this.#filmDetails.element.remove();
     bodyElement.classList.remove('hide-overflow');
   }
 
-  #onEscKeyDown = (e) => {
+  #handleEscKeyPress = (e) => {
     if (isEscKey(e)) {
       e.preventDefault();
       this.destroy();
     }
   };
 
-  #handleDeleteClick = () => {
+  #handleDeleteButtonClick = () => {
     this.#changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
@@ -81,7 +81,7 @@ export default class DetailsPresenter {
     );
   }
 
-  #handleSubmitKeyDown = (e) => {
+  #handleSubmitKeyPress = (e) => {
     if (isSubmitKeys(e)) {
       e.preventDefault();
 

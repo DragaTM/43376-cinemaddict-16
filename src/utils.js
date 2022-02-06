@@ -44,7 +44,7 @@ export const transformStringToQuote = (text, length) => {
 
 export const getRank = (filmsCount) => {
   if (filmsCount <= 10) {return 'Novice';}
-  if (filmsCount <= 20) {return 'Fun';}
+  if (filmsCount <= 20) {return 'Fan';}
   if (filmsCount > 20) {return 'Movie buff';}
 };
 
