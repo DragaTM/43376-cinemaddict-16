@@ -25,13 +25,13 @@ export default class FilmPresenter {
 
     if (prevFilmCard === null) {
       render(this.#siteListElement, this.#filmCard, renderPosition.BEFOREEND);
-      this.#filmCard.element.querySelector(`.film-card__link-${this.#film.id}`).addEventListener('click', () => {
+      this.#filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
         this.#openDetails(film);
       });
       return;
     }
 
-    this.#filmCard.element.querySelector(`.film-card__link-${this.#film.id}`).addEventListener('click', () => {
+    this.#filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
       this.#openDetails(film);
     });
 

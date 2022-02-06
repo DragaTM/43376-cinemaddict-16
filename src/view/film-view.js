@@ -2,7 +2,7 @@ import AbstractView from './abstract-view.js';
 import {transformArrayToString, transformMinutesToHours, transformStringToQuote} from '../utils.js';
 
 const createFilmTemplate = (film) => {
-  const {name, inWatchlist, isWatched, isFavorite, genres, description, comments, poster, rating, time, releaseDate, id} = film;
+  const {name, inWatchlist, isWatched, isFavorite, genres, description, comments, poster, rating, time, releaseDate} = film;
   const watchlistActive = inWatchlist ? ' film-card__controls-item--active' : '';
   const watchedActive = isWatched ? ' film-card__controls-item--active' : '';
   const favoriteActive = isFavorite ? ' film-card__controls-item--active' : '';
@@ -12,7 +12,7 @@ const createFilmTemplate = (film) => {
   const shortDescription = transformStringToQuote(description, 140);
 
   return `<article class="film-card">
-		<a class="film-card__link film-card__link-${id}">
+		<a class="film-card__link">
 			<h3 class="film-card__title">${name}</h3>
 			<p class="film-card__rating">${rating}</p>
 			<p class="film-card__info">

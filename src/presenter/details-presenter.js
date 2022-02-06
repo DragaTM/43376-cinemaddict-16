@@ -64,6 +64,7 @@ export default class DetailsPresenter {
     this.#filmDetails.reset(this.#film);
     this.#filmDetails.element.remove();
     bodyElement.classList.remove('hide-overflow');
+    this.#commentsModel.removeObserver(this.#handleModelEvent);
   }
 
   #handleEscKeyPress = (e) => {
